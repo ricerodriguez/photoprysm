@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
+import re
 import cmd
+import shlex
 import requests
 import argparse
 from photoprysm import core
 from photoprysm import albums
+from pprint import pprint
 
 class PhotoprysmCLI(cmd.Cmd):
     intro = ('Welcome to the Photoprysm CLI. Type \'help\' or \'?\' to list '
@@ -14,10 +17,16 @@ class PhotoprysmCLI(cmd.Cmd):
     user: core.User
     client: core.Client
     session: requests.Session
+    parser: argparse.ArgumentParser
 
     # Setup
     def preloop(self):
-        # We gotta log in
+        # Set up our parser
+        self.parser = argparse.ArgumentParser()
+        self.parser.add_argument('endpoint')
+        self.parser.add_argument('--params', '-p', action = 'extend', nargs = '+')
+        self.parser.add_argument('--data', '-d', action = 'extend', nargs = '+')
+        # Log in
         if self.mode == 'user':
             self.session = self.user.login(self.server_api)
         else:
@@ -29,6 +38,18 @@ class PhotoprysmCLI(cmd.Cmd):
         else:
             self.client.logout()
 
+    def parse_arg(self, arg):
+        raw_args = shlex.split(arg)
+        parsed_args = self.parser.parse_args(raw_args)
+        d = vars(parsed_args)
+        if parsed_args.params:
+            params = re.split(' ',parsed_args.params)
+            d['params'] = dict([re.split(r'\s*=\s*',param) for param in params])
+        if parsed_args.data:
+            data = re.split(' ',parsed_args.data)
+            d['data'] = dict([re.split(r'\s*=\s*',datapoint) for datapoint in data])
+        return d
+        
     # Quit
     def do_quit(self, arg):
         '''Log out of the session and exit the Photoprysm shell'''
@@ -45,6 +66,33 @@ class PhotoprysmCLI(cmd.Cmd):
             endpoint = 'status')
         resp.raise_for_status()
         print('Server is '+resp.json()['status'])
+
+    def _help_request(self, method: str):
+        print(f'Send out a {method.upper()} request to the server.')
+        self.parser.prog = method
+        self.parser.print_help()
+
+    def _do_request(self, method: str, arg):
+        parsed_args = self.parse_arg(arg)
+        resp = core.request(
+            session = self.session,
+            server_api = self.server_api,
+            method = method,
+            **parsed_args)
+        pprint(resp.json())
+
+    def help_get(self):
+        self._help_request('get')
+
+    def do_get(self, arg):
+        self._do_request('get', arg)
+
+    def help_post(self):
+        self._help_request('post')
+
+    def do_post(self, arg):
+        self._do_request('post', arg)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Photprysm CLI')
