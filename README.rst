@@ -26,7 +26,10 @@ A Python client for interacting the the Photoprism REST API.
 Features
 --------
 
-* TODO
+* Made to work with the popular Requests_ package
+* Session management for both Users and Clients
+
+.. _Requests: https://requests.readthedocs.io
 
 Credits
 -------
