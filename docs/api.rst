@@ -64,9 +64,33 @@ endpoints can be found in the ``photoprysm.albums`` module.
 
 .. autoclass:: Album
    :members:
-
 .. autoclass:: AlbumProperties
    :members:
 
+Album Functions
+^^^^^^^^^^^^^^^
+.. autofunction:: get_by_query
+.. autofunction:: get_by_uid                  
+.. autofunction:: create
+.. autofunction:: update
+.. autofunction:: delete
+.. autofunction:: batch_delete
+.. autofunction:: clone
+.. autofunction:: like
+.. autofunction:: unlike
+
+Share Links
+^^^^^^^^^^^
+.. autoclass:: ShareLink
+   :members:
+.. autoclass:: ShareLinkProperties
+   :members:
+.. autofunction:: get_share_links
+.. autofunction:: add_share_link
+.. autofunction:: update_share_link
+.. autofunction:: delete_share_link
+   
 .. Links
-.. _`requests-session`: https://requests.readthedocs.io/en/latest/api/#requests.Session
+.. _`requests.Session`: https://requests.readthedocs.io/en/latest/api/#requests.Session
+.. _`requests.Response`: https://requests.readthedocs.io/en/latest/api/#requests.Response
+.. _`requests.HTTPError`: https://requests.readthedocs.io/en/latest/api/#requests.HTTPError

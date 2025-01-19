@@ -83,16 +83,6 @@ class AlbumProperties:
         self.filter = _filter
         self.type = _type
 
-    def asjson(self) -> dict[str,str]:
-        d0 = asdict(self)
-        d1 = {}
-        for k,v in d0.items():
-            if v is None: continue
-            elif k == 'thumb_src': key = 'ThumbSrc'
-            else: key = k.title()
-            d1[key] = v
-        return json.dumps(d1)
-
 @dataclass
 class ShareLink:
     '''Data class for holding information about a share link
@@ -136,45 +126,33 @@ class ShareLink:
 
 @dataclass
 class ShareLinkProperties:
-    can_comment: bool = True,
-    can_edit: bool = True,
-    expires: int = 0,
-    max_views: int = 0,
-    password: str = '',
-    slug: str = '',
-    token: str = ''
-
-    def asjson(self) -> dict[str,str]:
-        d0 = asdict(self)
-        d1 = {}
-        for k,v in d0.items():
-            if v is None: continue
-            elif k == 'can_comment': key = 'CanComment'
-            elif k == 'can_edit': key = 'CanEdit'
-            elif k == 'max_views': key = 'MaxViews'
-            else: key = k.title()
-            d1[key] = v
-        return json.dumps(d1)
+    '''Share link properties. This is for setting and updating properties of share links.
     
-def parse_to_album(**kwargs) -> Album:
-    '''Convert a dict of key value pairs to an Album.'''
-    pattern = re.compile(r'(?<!^)(?=[A-Z])')
-    album_dict = {}
-    for k, v in kwargs.items():
-        key = re.sub('UID', 'Uid', k)
-        key = pattern.sub('_', key).lower()
-        if key in ['uid', 'title', 'description', 'favorite', 'private']:
-            album_dict[key] = v
-    return Album(json = kwargs, **album_dict)
+    :param bool can_comment: (optional) Allow visitors using the share link to comment.
+    :param bool can_edit: (optional) Allow visitors using the share link to edit.
+    :param int expires: (optional) Set expiration time for the link in seconds. Defaults to 0 to disable expiration.
+    :param int max_views: (optional) Set maximum number of views before link is disabled. Defaults to 0 to disable limit.
+    :param str password: (optional) Set a password that visitors must enter before they can view the media
+    '''
+    can_comment: Optional[bool] = None
+    can_edit: Optional[bool] = None
+    expires: Optional[int] = 0
+    max_views: Optional[int] = 0
+    slug: Optional[str] = None
+    token: Optional[str] = None
+    password: Optional[str] = None
 
-def parse_to_share_link(**kwargs) -> ShareLink:
+def _parse_to_album(**kwargs) -> Album:
+    '''Convert a dict of key value pairs to an Album.'''
+    attrs = {}
+    for k in ['UID', 'Title', 'Description', 'Favorite', 'Private']:
+        if kwargs.get(k) is None: continue
+        attrs[k.lower()] = kwargs.get(k)
+    return Album(json = kwargs, **attrs)
+
+def _parse_to_share_link(**kwargs) -> ShareLink:
     '''Convert a dict of key value pairs to an ShareLink.'''
-    pattern = re.compile(r'(?<!^)(?=[A-Z])')
-    share_link_dict = {}
-    for k, v in kwargs.items():
-        key = re.sub('UID', 'Uid', k)
-        key = pattern.sub('_', key).lower()
-        share_link_dict[key] = v
+    share_link_dict = core._askwargs(**kwargs)
     return ShareLink(**share_link_dict)
 
 def get_by_query(
@@ -214,7 +192,7 @@ def get_by_query(
     rv = []
     for raw_album in resp.json():
         print(raw_album)
-        rv.append(parse_to_album(**raw_album))
+        rv.append(_parse_to_album(**raw_album))
     return rv
             
 def create(
@@ -240,7 +218,7 @@ def create(
         url = urljoin(server_api, endpoint),
         method = 'POST',
         data = data)
-    return parse_to_album(**resp.json())
+    return _parse_to_album(**resp.json())
 
 def get_by_uid(
         session: requests.Session,
@@ -259,7 +237,7 @@ def get_by_uid(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'GET')
-    return parse_to_album(**resp.json())
+    return _parse_to_album(**resp.json())
 
 def update(
         session: requests.Session,
@@ -281,8 +259,8 @@ def update(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'PUT',
-        data = properties.asjson())
-    return parse_to_album(**resp.json())
+        data = core.asjson(properties))
+    return _parse_to_album(**resp.json())
 
 def delete(
         session: requests.Session,
@@ -309,12 +287,7 @@ def batch_delete(
     :param albums: List of albums to delete
     :type albums: list[Album]
     '''
-    selection = '{"albums":['
-    for album in albums:
-        selection += '"' + album.uid + '",'
-    else:
-        selection = selection.removesuffix(',')
-        selection += ']}'
+    selection = json.dumps({'albums': [album.uid for album in albums]})
     endpoint = 'batch/albums/delete'
     resp = core.request(
         session = session,
@@ -339,12 +312,9 @@ def clone(
     :type albums_to_copy: list[Album]
     '''
     endpoint = f'albums/{urlquote(album.uid)}/clone'
-    selection = '{"albums":['
-    for album_to_copy in albums_to_copy:
-        selection += '"' + album_to_copy.uid + '",'
-    else:
-        selection = selection.removesuffix(',')
-        selection += ']}'
+    selection = json.dumps(
+        {'albums': [album_to_copy.uid for album_to_copy in albums_to_copy]}
+    )
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -368,7 +338,7 @@ def like(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'POST')
-    return parse_to_album(**resp.json())
+    return _parse_to_album(**resp.json())
 
 def unlike(
         session: requests.Session,
@@ -385,7 +355,7 @@ def unlike(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'DELETE')
-    return parse_to_album(**resp.json())
+    return _parse_to_album(**resp.json())
 
 def get_share_links(
         session: requests.Session,
@@ -404,7 +374,7 @@ def get_share_links(
         method = 'GET')
     rv = []
     for link in resp.json():
-        rv.append(parse_to_share_link(**resp.json()))
+        rv.append(_parse_to_share_link(**resp.json()))
     return rv
 
 def add_share_link(
@@ -416,7 +386,7 @@ def add_share_link(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'POST')
-    return ShareLink(parse_to_share_link(**resp.json()))
+    return ShareLink(_parse_to_share_link(**resp.json()))
 
 def update_share_link(
         session: requests.Session,
@@ -429,9 +399,9 @@ def update_share_link(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'PUT',
-        data = link_props.asjson()
+        data = core.asjson(linkprops)
     )
-    return ShareLink(parse_to_share_link(**resp.json()))
+    return ShareLink(_parse_to_share_link(**resp.json()))
 
 def delete_share_link(
         session: requests.Session,
@@ -444,7 +414,7 @@ def delete_share_link(
         url = urljoin(server_api, endpoint),
         method = 'DELETE'
     )
-    return ShareLink(parse_to_share_link(**resp.json()))
+    return ShareLink(_parse_to_share_link(**resp.json()))
 
 def get_cover_image(
         user: core.User,

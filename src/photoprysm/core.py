@@ -1,3 +1,4 @@
+import re
 import json
 import requests
 import logging
@@ -24,7 +25,13 @@ class Client:
         self.auth = (client_id, client_secret)
 
     def login(self, server_api: str) -> requests.Session:
-        '''Login to the server as a Client'''
+        '''Login to the server as a Client
+
+        :param str server_api: Base URL to the server API
+        :raises `requests.HTTPError`_: If the credentials are invalid or the server is not accepting requests
+        :returns: Pre-configured Session with the authentication token for this Client
+        :rtype: `requests.Session`_
+        '''
         self.__server_api = server_api
         resp = requests.post(
             url = urljoin(server_api, 'oauth/token'),
@@ -60,7 +67,13 @@ class User:
     download_token: str | None = None
 
     def login(self, server_api: str) -> requests.Session:
-        '''Login to the server as a User'''
+        '''Login to the server as a User
+
+        :param str server_api: Base URL to the server API
+        :raises `requests.HTTPError`_: If the credentials are invalid or the server is not accepting requests
+        :returns: Pre-configured Session with the authentication token for this User
+        :rtype: `requests.Session`_
+        '''
         url = urljoin(server_api, 'session')
         self._url  = url
         data = json.dumps({'username': self.username, 'password': self.password})
@@ -122,6 +135,33 @@ def client_session(client: Client, server_api: str):
     finally:
         client.logout()
     
+# Semi-private
+def _camel_to_snake(camel: str):
+    '''Taken from https://stackoverflow.com/a/1176023'''
+    tmp = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', camel)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', tmp).lower()
+
+def _snake_to_camel(snake: str):
+    '''Taken from https://stackoverflow.com/a/1176023'''
+    return ''.join(word.title() for word in snake.split('_'))
+
+def _asjson(cls: dataclass) -> str:
+    d0 = asdict(cls)
+    d1 = {}
+    for k,v in d0.items():
+        if v is None: continue
+        key = __snake_to_camel(k)
+        d1[key] = v
+    return json.dumps(d1)
+
+def _askwargs(**kwargs):
+    d = {}
+    for k, v in kwargs.items():
+        if v is None: continue
+        d[_camel_to_snake(k)] = v
+    return d
+
+# Public
 def get_api_url(
         netloc: Optional[str] = None,
         scheme: Optional[str] = None) -> str:
@@ -144,15 +184,17 @@ def request(
         headers: Optional[dict[str,str]] = None,
         params: Optional[dict[str,str]] = None,
         data: Optional[dict[str,str]] = None) -> requests.Response:
-    '''Send the request from a requests.Session.
+    '''Send the request from a pre-configured `requests.Session`_ instance.
 
     :param session: requests.Session handle with the access token pre-configured
-    :type session: requests.Session
+    :type session: `requests.Session`_
     :param url: URL to send the requests to
     :param method: Method of request, e.g. GET, POST, PUT, DELETE
     :param headers: Headers to send the request with. Defaults to {'accept:application/json', 'Content-Type':'application/json'}
     :param params: Dictionary, list of tuples or bytes to send in the query string for the Request.
     :param data: Data to send with the request
+    :returns: Response from the server after sending the request
+    :rtype: `requests.Response`_
     '''
     u_headers = {
         'accept': 'application/json',
