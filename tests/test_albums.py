@@ -130,7 +130,7 @@ def test_real_create_albums(user, server_api):
 @responses.activate
 def test_get_albums(user, server_api, session):
     responses.get(
-        url = urljoin(server_api, 'albums?count=1'),
+        url = urljoin(server_api, 'albums?count=1&q=1'),
         status = 200,
         json = [__GET_ALBUMS_JSON]
     )
@@ -148,7 +148,7 @@ def test_get_albums(user, server_api, session):
 # in the server_api fixture
 def test_real_get_albums(user, server_api):
     with core.user_session(user, server_api) as session:
-        albums_list = albums.get_by_query(session, server_api, 1)
+        albums_list = albums.get_by_query(session, server_api, 'Friendsgiving')
         assert isinstance(albums_list, list)
 
 @responses.activate
@@ -163,8 +163,8 @@ def test_get_album_by_name(user, server_api, session):
 
 def test_real_get_album_by_name(user, server_api):
     with core.user_session(user, server_api) as session:
-        album = albums.get_by_title(session, server_api, 'Test Album')
-    assert album.title == 'Test Album'
+        album_list = albums.get_by_query(session, server_api, 'Test Album')
+    assert album_list[0].title == 'Test Album'
 
 @responses.activate
 def test_delete_album(user, server_api, session):

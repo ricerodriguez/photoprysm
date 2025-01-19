@@ -152,10 +152,10 @@ def _parse_to_share_link(**kwargs) -> ShareLink:
 def get_by_query(
         session: requests.Session,
         server_api: str,
+        query: str,
         count: int = 1,
         offset: Optional[int] = None,
-        order: Optional[str] = None,
-        query: Optional[str] = None) -> list[Album]:
+        order: Optional[str] = None) -> list[Album]:
     '''
     Get albums matching the provided query.
 
@@ -169,15 +169,15 @@ def get_by_query(
     '''
     # Build the URL with the query
     endpoint = 'albums'
-    params = {'count': count}
-    if offset is not None:
-        params.update({'offset': offset})
+    _params = {'count': count, 'q': query, 'offset': offset, 'order': order}
+    params = {}
     if order is not None:
         if order not in ValidSortOrderTypes:
             raise ValueError('Invalid value provided sort sort order.')
-        params.update({'order': order})
-    if query is not None:
-        params.update({'q': query})
+        _params.update({'order': order})
+    for k,v in _params.items():
+        if v is None: continue
+        params[k] = v
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -189,22 +189,6 @@ def get_by_query(
         rv.append(_parse_to_album(**raw_album))
     return rv
             
-def get_by_title(
-        session: requests.Session,
-        server_api: str,
-        title: str) -> Album | None:
-    '''Get the Album instance from the title
-
-    :param requests.Session session: Session to make the request from
-    :param str server_api: Base URL for the server API
-    :param str title: Title of the album to search for
-    '''
-    rv = get_by_query(session, server_api, count = 1, query = f'title:"{title}"')
-    try:
-        return rv[0]
-    except IndexError:
-        return None
-
 def create(
         session: requests.Session,
         server_api: str,
