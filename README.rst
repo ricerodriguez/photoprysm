@@ -6,9 +6,6 @@ Photoprism Python Client
 .. image:: https://img.shields.io/pypi/v/photoprysm.svg
         :target: https://pypi.python.org/pypi/photoprysm
 
-.. image:: https://img.shields.io/travis/ricerodriguez/photoprysm.svg
-        :target: https://travis-ci.com/ricerodriguez/photoprysm
-
 .. image:: https://readthedocs.org/projects/photoprysm/badge/?version=latest
         :target: https://photoprysm.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status

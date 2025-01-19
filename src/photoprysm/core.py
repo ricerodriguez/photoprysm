@@ -1,24 +1,20 @@
 import requests
 import logging
 from typing import Optional
-from urllib.parse import urlparse, urljoin, ParseResult
+from urllib.parse import urljoin
 from dataclasses import dataclass, InitVar, field
 import contextlib
 
 logger = logging.getLogger(__name__)
 
 @dataclass
-class ServerAPI:
-    host: InitVar[str]
-    port: InitVar[int]
-    scheme: InitVar[str]
-    url: ParseResult = field(init = False)
-
-    def __post_init__(self, host: str, port: int, scheme: str):
-        self.url = urlparse(f'{scheme}://{host}:{port!s}/api/v1')
-
-@dataclass
 class Client:
+    '''
+    Dataclass for holding authentication information for the application's Client credentials.
+
+    :param client_id: Client ID generated from `Photoprism CLI`_. See the note below.
+    :param client_secret: Client secret generated from `Photoprism CLI`_. See the note below.
+    '''
     client_id: InitVar[str]
     client_secret: InitVar[str]
     auth: tuple[str] = field(init = False)
@@ -26,17 +22,18 @@ class Client:
     def __post_init__(self, client_id: str, client_secret: str):
         self.auth = (client_id, client_secret)
 
-    def login(self, server_api: ServerAPI) -> requests.Session:
+    def login(self, server_api: str) -> requests.Session:
+        '''Login to the server as a Client'''
         self.__server_api = server_api
-        url = get_api_url('oauth/token', server_api)
         resp = requests.post(
-            url,
+            url = urljoin(server_api, 'oauth/token'),
             auth = client.auth)
         resp.raise_for_status()
         self._session = requests.Session()
         self._session.auth = resp.json()['access_token']
 
     def request(self, **kwargs) -> requests.Response:
+        '''Send a request to the server as a Client'''
         session = getattr(self, '_session', None)
         if not session:
             logger.info('No current session open. Starting one now...')
@@ -47,9 +44,9 @@ class Client:
         return resp
 
     def logout(self) -> None:
-        url = get_api_url('oauth/revoke', self.__server_api)
+        '''Logout of the server as a Client'''
         resp = requests.post(
-            url,
+            url = urljoin(server_api, 'oauth/revoke'),
             auth = self.auth)
         resp.raise_for_status()
         self._session.close()
@@ -60,8 +57,9 @@ class User:
     password: str = field(repr = False)
     uid: str | None = None
 
-    def login(self, server_api: ServerAPI) -> requests.Session:
-        url = get_api_url('session', server_api)
+    def login(self, server_api: str) -> requests.Session:
+        '''Login to the server as a User'''
+        url = urljoin(server_api, 'session')
         self._url  = url
         data = '{"username":"'+self.username+'", '
         data += '"password":"'+self.password+'"}'
@@ -73,9 +71,11 @@ class User:
         resp.raise_for_status()
         self._session = requests.Session()
         self._session.auth = PhotoprismAccessToken(resp.json()['id'])
+        self.uid = self.uid or resp.json()['user']['UID']
         return self._session
 
     def request(self, **kwargs) -> requests.Response:
+        '''Send a request to the server as a User'''
         session = getattr(self, '_session', None)
         if not session:
             logger.info('No current session open. Starting one now...')
@@ -86,6 +86,7 @@ class User:
         return resp
 
     def logout(self) -> None:
+        '''Logout of the server as a User'''
         resp = self._session.delete(self._url)
         resp.raise_for_status()
         self._session.close()
@@ -101,7 +102,7 @@ class PhotoprismAccessToken(requests.auth.AuthBase):
 @contextlib.contextmanager
 def user_session(
         user: User,
-        server_api: ServerAPI) -> requests.Session:
+        server_api: str) -> requests.Session:
     session = user.login(server_api)
     try:
         yield session
@@ -109,7 +110,7 @@ def user_session(
         user.logout()
 
 @contextlib.contextmanager
-def client_session(client: Client, server_api: ServerAPI):
+def client_session(client: Client, server_api: str):
     session = client.login(server_api)
     try:
         yield session
@@ -117,51 +118,36 @@ def client_session(client: Client, server_api: ServerAPI):
         client.logout()
     
 def get_api_url(
-        endpoint: str,
-        server_api: ServerAPI,
-        download_token: Optional[str] = None):
+        netloc: Optional[str] = None,
+        scheme: Optional[str] = None) -> str:
     '''
-    Build the url to the API as "<scheme>://<host>/api/v1/<endpoint>"
-    :param endpoint: Endpoint to put at the end of the URL
-    :param scheme: Scheme to use for the URL. Defaults to 'http'. Can only be 'http' or 'https'.
-    :param host: Host where the PhotoPrism server is receiving API requests. Defaults to 'localhost'.
-    :param port: Port to connect to the Photoprism server. Defaults to 2342.
-    :param download_token: Optional download token to include if the response is expected to return a 
+    Constructs the server API URL. 
+
+    :param netloc: Network location. This is the hostname, with the port if necessary. Defaults to 'localhost:2342'.
+    :param scheme: Scheme to send requests with. Must be either 'http' or 'https'.
     '''
-    u_scheme = server_api.url.scheme or 'http'
-    # Validate scheme
-    if u_scheme not in ['http', 'https']:
-        raise TypeError('Scheme can only be \'http\' or \'https\'.')
-    u_host = server_api.url.hostname or 'localhost'
-    u_port = server_api.url.port or 2342
-    base = f'{u_scheme}://{u_host}:{u_port!s}/api/v1/'
-    url = urljoin(base, endpoint)
-    if download_token is not None:
-        if not url.endswith('/dl'):
-            raise TypeError('Endpoint must be requesting to download a file '
-                            '(ending in \'dl\') in order to add the download '
-                            'token.')
-        url = urljoin(url, f'?t={download_token}')
-    return url
+    u_netloc = netloc or 'localhost:2342'
+    u_scheme = scheme or 'http'
+    if not (u_scheme in ['http', 'https']):
+        raise TypeError('Scheme must be set to either \'http\' or \'https\'.')
+    return f'{u_scheme}://{u_netloc}/api/v1/'
 
 def request(
         session: requests.Session,
-        server_api: ServerAPI,
+        url: str,
         method: str,
-        endpoint: str,
         headers: Optional[dict[str,str]] = None,
         params: Optional[dict[str,str]] = None,
-        data: Optional[dict[str,str]] = None):
-    '''
-    Send the request from a user created session.
-    :param user: User to make the session for the request from.
+        data: Optional[dict[str,str]] = None) -> requests.Response:
+    '''Send the request from a requests.Session.
+
+    :param session: requests.Session handle with the access token pre-configured
+    :param url: URL to send the requests to
     :param method: Method of request, e.g. GET, POST, PUT, DELETE
-    :param endpoint: API endpoint to request to
-    :param params: (optional) Dictionary, list of tuples or bytes to send in the query string for the Request.
-    :param data: (optional) Data to send with the request
-    :returns requests.Response: Response received
+    :param headers: Headers to send the request with. Defaults to {'accept:application/json', 'Content-Type':'application/json'}
+    :param params: Dictionary, list of tuples or bytes to send in the query string for the Request.
+    :param data: Data to send with the request
     '''
-    url = get_api_url(endpoint, server_api)
     u_headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json',

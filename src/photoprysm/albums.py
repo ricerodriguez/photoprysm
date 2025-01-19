@@ -4,7 +4,7 @@ import logging
 import requests
 import datetime
 from . import core
-from urllib.parse import urlparse, urljoin, quote as urlquote
+from urllib.parse import urljoin, quote as urlquote
 from dataclasses import dataclass, field, InitVar
 from typing import Optional
 
@@ -131,16 +131,16 @@ def parse_to_share_link(**kwargs) -> ShareLink:
 
 def get_by_query(
         session: requests.Session,
-        server_api: core.ServerAPI,
+        server_api: str,
         count: int,
         offset: Optional[int] = None,
         order: Optional[str] = None,
         q: Optional[str] = None) -> list[Album]:
     '''
     Get albums matching the provided query.
-    /api/v1/albums
+
     :param session: Session to make the request from
-    :param server_api: ServerAPI object with the API URL information
+    :param server_api: String with the base URL for the API
     :param count: Maximum number of results
     :param offset: Search result offset
     :param order: Sort order. Choose from favorites, name, title, added, or edited.
@@ -160,9 +160,8 @@ def get_by_query(
         params.update({'q': q})
     resp = core.request(
         session = session,
-        server_api = server_api,
+        url = urljoin(server_api, endpoint),
         method = 'GET',
-        endpoint = endpoint,
         params = params)
     rv = []
     for raw_album in resp.json():
@@ -172,13 +171,14 @@ def get_by_query(
             
 def create(
         session: requests.Session,
-        server_api: core.ServerAPI,
+        server_api: str,
         title: str,
         favorite: bool = False) -> Album:
     '''
     Creates a new album.
+
     :param session: Session to make the request from
-    :param server_api: ServerAPI object with the API URL information
+    :param server_api: String with the base URL for the API
     :param title: Title of the new album
     :param favorite: Mark as favorite or not
     '''
@@ -187,129 +187,123 @@ def create(
     data = {'Title': title, 'Favorite': favorite}
     resp = core.request(
         session = session,
-        server_api = server_api,
+        url = urljoin(server_api, endpoint),
         method = 'POST',
-        endpoint = endpoint,
         data = data)
     return parse_to_album(**resp.json())
 
 def get_by_uid(
         session: requests.Session,
-        server_api: core.ServerAPI,
+        server_api: str,
         uid: str) -> Album:
     '''
     Gets the Album handle from the provided UID.
+
     :param client: Client to make the request from
     :param uid: UID of the album to get
     '''
     endpoint = f'albums/{urlquote(uid)}'
     resp = core.request(
         session = session,
-        server_api = server_api,
-        method = 'GET',
-        endpoint = endpoint)
+        url = urljoin(server_api, endpoint),
+        method = 'GET')
     return parse_to_album(**resp.json())
 
 def update(
         session: requests.Session,
-        server_api: core.ServerAPI,
+        server_api: str,
         uid: str,
         properties: AlbumProperties) -> Album:
     '''
     Update the album properties.
+
     :param session: Session to make the request from
-    :param server_api: ServerAPI object with the API URL information
+    :param server_api: String with the base URL for the API
     :param uid: UID of the album to update
     :param properties: Properties to update the album with
     '''
     endpoint = f'albums/{urlquote(uid)}'
     resp = core.request(
         session = session,
-        server_api = server_api,
+        url = urljoin(server_api, endpoint),
         method = 'PUT',
-        endpoint = endpoint,
         data = properties.asjsondict())
     return parse_to_album(**resp.json())
 
 def delete(
         session: requests.Session,
-        server_api: core.ServerAPI,
+        server_api: str,
         uid: str) -> None:
     '''
     :param session: Session to make the request from
-    :param server_api: ServerAPI object with the API URL information
+    :param server_api: String with the base URL for the API
     '''
     endpoint = f'albums/{urlquote(uid)}'
     resp = core.request(
         session = session,
-        server_api = server_api,
-        method = 'DELETE',
-        endpoint = endpoint)
+        url = urljoin(server_api, endpoint),
+        method = 'DELETE')
 
 def clone(
         session: requests.Session,
-        server_api: core.ServerAPI,
+        server_api: str,
         uid: str,
         selection: AlbumSelection) -> None:
     '''
     :param session: Session to make the request from
-    :param server_api: ServerAPI object with the API URL information
+    :param server_api: String with the base URL for the API
     '''
     endpoint = f'albums/{urlquote(uid)}/clone'
     resp = core.request(
         session = session,
-        server_api = server_api,
+        url = urljoin(server_api, endpoint),
         method = 'POST',
-        endpoint = endpoint,
         data = selection.asjsondict()
     )
 
 def like(
         session: requests.Session,
-        server_api: core.ServerAPI,
+        server_api: str,
         uid: str) -> Album:
     '''
     :param session: Session to make the request from
-    :param server_api: ServerAPI object with the API URL information
+    :param server_api: String with the base URL for the API
     '''
     endpoint = f'albums/{urlquote(uid)}/like'
     resp = core.request(
         session = session,
-        server_api = server_api,
-        method = 'POST',
-        endpoint = endpoint)
+        url = urljoin(server_api, endpoint),
+        method = 'POST')
     return parse_to_album(**resp.json())
 
 def unlike(
         session: requests.Session,
-        server_api: core.ServerAPI,
+        server_api: str,
         uid: str) -> Album:
     '''
     :param session: Session to make the request from
-    :param server_api: ServerAPI object with the API URL information
+    :param server_api: String with the base URL for the API
     '''
     endpoint = f'albums/{urlquote(uid)}/like'
     resp = core.request(
         session = session,
-        server_api = server_api,
-        method = 'DELETE',
-        endpoint = endpoint)
+        url = urljoin(server_api, endpoint),
+        method = 'DELETE')
     return parse_to_album(**resp.json())
 
 def get_share_links(
         session: requests.Session,
-        server_api: core.ServerAPI,
+        server_api: str,
         uid: str) -> list[ShareLink]:
     '''
     :param session: Session to make the request from
-    :param server_api: ServerAPI object with the API URL information
+    :param server_api: String with the base URL for the API
     '''
     endpoint = f'albums/{urlquote(uid)}/links'
     resp = core.request(
         session = session,
-        server_api = server_api,
-        method = 'GET',
-        endpoint = endpoint)
+        url = urljoin(server_api, endpoint),
+        method = 'GET')
     rv = []
     for link in resp.json():
         rv.append(parse_to_share_link(**resp.json()))
@@ -317,14 +311,13 @@ def get_share_links(
 
 def add_share_link(
         session: requests.Session,
-        server_api: core.ServerAPI,
+        server_api: str,
         uid: str) -> ShareLink:
     endpoint = f'albums/{urlquote(uid)}/links'
     resp = core.request(
         session = session,
-        server_api = server_api,
-        method = 'POST',
-        endpoint = endpoint)
+        url = urljoin(server_api, endpoint),
+        method = 'POST')
     return ShareLink(parse_to_share_link(**resp.json()))
     
         

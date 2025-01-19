@@ -24,8 +24,14 @@ class PhotoprysmCLI(cmd.Cmd):
         # Set up our parser
         self.parser = argparse.ArgumentParser()
         self.parser.add_argument('endpoint')
-        self.parser.add_argument('--params', '-p', action = 'extend', nargs = '+')
-        self.parser.add_argument('--data', '-d', action = 'extend', nargs = '+')
+        self.parser.add_argument('--params', '-p', action = 'extend', nargs = '+',
+                                 help = ('Separate each parameter with a space and '
+                                         'separate the key and value with a \'=\'. '
+                                         'For example, \'-p example=true test="hello"\''))
+        self.parser.add_argument('--data', '-d', action = 'extend', nargs = '+',
+                                 help = ('Separate the data with a space and '
+                                         'separate the key and value with a \'=\'. '
+                                         'For example, \'-d example=true test="hello"\''))
         # Log in
         if self.mode == 'user':
             self.session = self.user.login(self.server_api)
@@ -92,6 +98,18 @@ class PhotoprysmCLI(cmd.Cmd):
 
     def do_post(self, arg):
         self._do_request('post', arg)
+
+    def help_put(self):
+        self._help_request('put')
+
+    def do_put(self, arg):
+        self._do_request('put', arg)
+
+    def help_delete(self):
+        self._help_request('delete')
+
+    def do_delete(self, arg):
+        self._do_request('delete', arg)
 
 
 if __name__ == '__main__':

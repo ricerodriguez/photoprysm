@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import pytest
 import responses
+from urllib.parse import urljoin
 from dataclasses import asdict
 from photoprysm import core
 from photoprysm import albums
@@ -38,9 +39,8 @@ __GET_ALBUMS_JSON = {
 
 @pytest.fixture
 def server_api():
-    return core.ServerAPI(
-        host = 'localhost',
-        port = 2342,
+    return core.get_api_url(
+        netloc = 'localhost:2342',
         scheme = 'http'
     )
 
@@ -63,7 +63,7 @@ def session(user, server_api):
     with responses.RequestsMock() as mock:
         mock.add(
             method = responses.POST,
-            url = core.get_api_url('session', server_api),
+            url = urljoin(server_api, 'session'),
             json = {
                 "access_token": "example_token",
                 "expires_in": 1209599,
@@ -72,12 +72,26 @@ def session(user, server_api):
                 "scope": "",
                 "session_id": "example_session_id",
                 "status": "success",
-                "token_type": "Bearer"
+                "token_type": "Bearer",
+                "user": {
+                    "ID": 1,
+                    "UID": "example_uid",
+                    "AuthProvider": "local",
+                    "AuthMethod": "",
+                    "AuthID": "",
+                    "Name": "admin",
+                    "DisplayName": "Admin",
+                    "Email": "",
+                    "Role": "admin",
+                    "Attr": "",
+                    "SuperAdmin": True,
+                    "CanLogin": True,
+                }
             }
         )
         mock.add(
             method = responses.DELETE,
-            url = core.get_api_url('session', server_api),
+            url = urljoin(server_api, 'session'),
             json = {
                 "session_id": "example_token",
                 "status": "deleted"
@@ -89,7 +103,7 @@ def session(user, server_api):
 @responses.activate
 def test_get_albums(user, server_api, session):
     responses.get(
-        url = core.get_api_url('albums?count=1', server_api),
+        url = urljoin(server_api, 'albums?count=1'),
         status = 200,
         json = [__GET_ALBUMS_JSON]
     )
