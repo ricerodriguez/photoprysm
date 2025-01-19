@@ -34,11 +34,6 @@ you will need to pass the base URL to the API. You can either use the
 .. autoclass:: Client               
    :members:
 
-.. autofunction:: get_api_url
-
-.. autofunction:: request
-      
-
 .. note::
    ..  _client-auth-note:
 
@@ -52,23 +47,50 @@ you will need to pass the base URL to the API. You can either use the
    Photoprism's `Client Credentials`_ page for more
    information.
           
-   .. _`Photoprism CLI`: https://docs.photoprism.app/getting-started/docker-compose/#command-line-interface
-   .. _`Client Credentials`: https://docs.photoprism.app/developer-guide/api/auth/#client-credentials
+.. autofunction:: user_session
 
-``photoprysm.albums``
----------------------
-.. module:: photoprysm.albums
+>>> with user_session(user, server_api) as session:
+>>>     # Do stuff
 
-All functions and dataclasses for interfacing with the album API
-endpoints can be found in the ``photoprysm.albums`` module.
+.. autofunction:: client_session                  
+
+>>> with client_session(client, server_api) as session:
+>>>     # Do stuff
+
+.. autofunction:: get_api_url
+.. autofunction:: request
+
+Models
+------
+
+Several dataclasses in this package hold information about various
+models to be used for interfacing with. These classes do not have many
+(if any) methods and are purely for holding data in a convenient way.
 
 .. autoclass:: Album
    :members:
 .. autoclass:: AlbumProperties
    :members:
+.. autoclass:: ShareLink
+   :members:
+.. autoclass:: ShareLinkProperties
+   :members:
+.. autoclass:: Photo
+   :members:
+.. autoclass:: PhotoFile
+   :members:
+.. autoclass:: PhotoDetails
+   :members:
+.. autoclass:: PhotoProperties
+   :members:
 
-Album Functions
-^^^^^^^^^^^^^^^
+``photoprysm.albums``
+---------------------
+.. module:: photoprysm.albums
+
+All functions for interfacing with the album API endpoints can be
+found in the ``photoprysm.albums`` module.
+
 .. autofunction:: get_by_query
 .. autofunction:: get_by_uid                  
 .. autofunction:: create
@@ -78,19 +100,32 @@ Album Functions
 .. autofunction:: clone
 .. autofunction:: like
 .. autofunction:: unlike
-
-Share Links
-^^^^^^^^^^^
-.. autoclass:: ShareLink
-   :members:
-.. autoclass:: ShareLinkProperties
-   :members:
 .. autofunction:: get_share_links
 .. autofunction:: add_share_link
 .. autofunction:: update_share_link
 .. autofunction:: delete_share_link
    
+``photoprysm.photos``
+---------------------
+.. module:: photoprysm.photos
+
+.. error:: These have not been implemented yet!
+           
+All functions for interfacing with the photo API endpoints can be
+found in the ``photoprysm.photos`` module.
+
+.. autofunction:: get_by_query
+.. autofunction:: get_by_uid
+.. autofunction:: update
+.. autofunction:: approve
+.. autofunction:: set_primary_file
+.. autofunction:: pop_file
+.. autofunction:: like
+.. autofunction:: unlike
+
 .. Links
+.. _`Photoprism CLI`: https://docs.photoprism.app/getting-started/docker-compose/#command-line-interface
+.. _`Client Credentials`: https://docs.photoprism.app/developer-guide/api/auth/#client-credentials
 .. _`requests.Session`: https://requests.readthedocs.io/en/latest/api/#requests.Session
 .. _`requests.Response`: https://requests.readthedocs.io/en/latest/api/#requests.Response
 .. _`requests.HTTPError`: https://requests.readthedocs.io/en/latest/api/#requests.HTTPError

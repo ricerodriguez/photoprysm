@@ -121,6 +121,11 @@ class PhotoprismAccessToken(requests.auth.AuthBase):
 def user_session(
         user: User,
         server_api: str) -> requests.Session:
+    '''Context manager for creating and deleting a User session.
+    
+    :param User user: User to create the session with
+    :param str server_api: Base URL of the server API
+    '''
     session = user.login(server_api)
     try:
         yield session
@@ -129,6 +134,11 @@ def user_session(
 
 @contextlib.contextmanager
 def client_session(client: Client, server_api: str):
+    '''Context manager for creating and deleting a Client session.
+    
+    :param Client client: Client to create the session with
+    :param str server_api: Base URL of the server API
+    '''
     session = client.login(server_api)
     try:
         yield session
