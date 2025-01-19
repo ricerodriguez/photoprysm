@@ -44,7 +44,7 @@ class AlbumProperties:
     :param str|None country: (optional)
     :param str|None description: (optional)
     :param bool|None favorite: (optional)
-    :param str|None _filter: (optional)
+    :param str|None filter: (optional) Pass to the constructor as ``_filter``. Access as ``filter``.
     :param str|None location: (optional)
     :param str|None notes: (optional)
     :param str|None order: (optional)
@@ -53,7 +53,7 @@ class AlbumProperties:
     :param str|None thumb: (optional)
     :param str|None thumb_src: (optional)
     :param str|None title: (optional)
-    :param str|None _type: (optional)
+    :param str|None type: (optional) Pass to the constructor as ``_type``. Access as ``type``.
     '''
     caption: Optional[str] = None
     category: Optional[str] = None
@@ -61,9 +61,6 @@ class AlbumProperties:
     description: Optional[str] = None
     favorite: Optional[bool] = None
     _filter: InitVar[Optional[str]] = None
-    #: Holds the value of ``_filter`` when that was passed in. This is to keep
-    #: from passing the name of the built-in function ``filter()`` as a parameter to
-    #: the constructor.
     filter: Optional[str] = field(init = False)
     location: Optional[str] = None
     notes: Optional[str] = None
@@ -74,9 +71,6 @@ class AlbumProperties:
     thumb_src: Optional[str] = None
     title: Optional[str] = None
     _type: InitVar[Optional[str]] = None
-    #: Holds the value of ``_type`` when that was passed in. This is to keep
-    #: from passing the name of the built-in function ``type()`` as a parameter to
-    #: the constructor.
     type: Optional[str] = field(init = False)
 
     def __post_init__(self, _filter, _type):
@@ -158,10 +152,10 @@ def _parse_to_share_link(**kwargs) -> ShareLink:
 def get_by_query(
         session: requests.Session,
         server_api: str,
-        count: int,
+        count: int = 1,
         offset: Optional[int] = None,
         order: Optional[str] = None,
-        q: Optional[str] = None) -> list[Album]:
+        query: Optional[str] = None) -> list[Album]:
     '''
     Get albums matching the provided query.
 
@@ -182,8 +176,8 @@ def get_by_query(
         if order not in ValidSortOrderTypes:
             raise ValueError('Invalid value provided sort sort order.')
         params.update({'order': order})
-    if q is not None:
-        params.update({'q': q})
+    if query is not None:
+        params.update({'q': query})
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -195,6 +189,22 @@ def get_by_query(
         rv.append(_parse_to_album(**raw_album))
     return rv
             
+def get_by_title(
+        session: requests.Session,
+        server_api: str,
+        title: str) -> Album | None:
+    '''Get the Album instance from the title
+
+    :param requests.Session session: Session to make the request from
+    :param str server_api: Base URL for the server API
+    :param str title: Title of the album to search for
+    '''
+    rv = get_by_query(session, server_api, count = 1, query = f'title:"{title}"')
+    try:
+        return rv[0]
+    except IndexError:
+        return None
+
 def create(
         session: requests.Session,
         server_api: str,
@@ -212,7 +222,7 @@ def create(
     '''
     endpoint = 'albums'
     # Swagger Docs says these are the only two data supported
-    data = {'Title': title, 'Favorite': favorite}
+    data = json.dumps({'Title': title, 'Favorite': favorite})
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -295,7 +305,6 @@ def batch_delete(
         method = 'DELETE',
         data = selection
     )
-
 
 def clone(
         session: requests.Session,
@@ -429,5 +438,3 @@ def get_cover_image(
     :param Album album: Album to get the cover image of
     '''
     raise NotImplementedError('This has not been implemented yet.')
-
-    

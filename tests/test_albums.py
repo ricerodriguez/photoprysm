@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
+import json
 import pytest
 import responses
-from urllib.parse import urljoin
+from urllib.parse import urljoin, quote as urlquote
 from dataclasses import asdict
 from photoprysm import core
 from photoprysm import albums
@@ -113,6 +114,20 @@ def session(user, server_api):
             yield session
 
 @responses.activate
+def test_create_albums(user, server_api, session):
+    responses.post(
+        url = urljoin(server_api, 'albums'),
+        status = 200,
+        json = __GET_ALBUMS_JSON)
+    album = albums.create(session, server_api, 'TEST ALBUM')
+    assert album.uid == __GET_ALBUMS_JSON['UID']
+
+def test_real_create_albums(user, server_api):
+    with core.user_session(user, server_api) as session:
+        album = albums.create(session, server_api, 'TEST ALBUM')
+    assert isinstance(album, albums.Album)
+
+@responses.activate
 def test_get_albums(user, server_api, session):
     responses.get(
         url = urljoin(server_api, 'albums?count=1'),
@@ -135,3 +150,31 @@ def test_real_get_albums(user, server_api):
     with core.user_session(user, server_api) as session:
         albums_list = albums.get_by_query(session, server_api, 1)
         assert isinstance(albums_list, list)
+
+@responses.activate
+def test_get_album_by_name(user, server_api, session):
+    responses.get(
+        url = urljoin(server_api, 'albums?count=1&q=title%3A%22Test%20Album%22'),
+        status = 200,
+        json = [__GET_ALBUMS_JSON]
+    )
+    album = albums.get_by_title(session, server_api, 'Test Album')
+    assert album.title == 'Berlin'
+
+def test_real_get_album_by_name(user, server_api):
+    with core.user_session(user, server_api) as session:
+        album = albums.get_by_title(session, server_api, 'Test Album')
+    assert album.title == 'Test Album'
+
+@responses.activate
+def test_delete_album(user, server_api, session):
+    responses.delete(
+        url = urljoin(server_api, f'albums/{__GET_ALBUMS_JSON["UID"]}'),
+        status = 200,
+        json = __GET_ALBUMS_JSON)
+    album = albums.Album(uid = __GET_ALBUMS_JSON['UID'])
+    assert albums.delete(session, server_api, album) is None
+
+# @responses.activate
+# def test_get_share_links(user, server_api, session):
+#     pass

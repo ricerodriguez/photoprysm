@@ -4,7 +4,7 @@ import requests
 import logging
 from typing import Optional
 from urllib.parse import urljoin
-from dataclasses import dataclass, InitVar, field
+from dataclasses import dataclass, InitVar, field, asdict
 import contextlib
 
 logger = logging.getLogger(__name__)
@@ -142,15 +142,18 @@ def _camel_to_snake(camel: str):
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', tmp).lower()
 
 def _snake_to_camel(snake: str):
-    '''Taken from https://stackoverflow.com/a/1176023'''
-    return ''.join(word.title() for word in snake.split('_'))
+    '''Modified from https://stackoverflow.com/a/1176023'''
+    rv = ''.join(word.title() for word in snake.split('_'))
+    if rv in ['Uid', 'Json']:
+        rv = rv.upper()
+    return rv
 
 def _asjson(cls: dataclass) -> str:
     d0 = asdict(cls)
     d1 = {}
     for k,v in d0.items():
         if v is None: continue
-        key = __snake_to_camel(k)
+        key = _snake_to_camel(k)
         d1[key] = v
     return json.dumps(d1)
 
