@@ -28,6 +28,27 @@ Features
 
 .. _Requests: https://requests.readthedocs.io
 
+Quickstart
+----------
+
+To start, you need a :class:`User` or :class:`Client` instance.
+
+>>> import photoprysm
+>>> user = photoprysm.User('username', 'password')
+>>> server_api = photoprysm.get_api_url('localhost:2342')
+
+You can either login with the :class:`User` or :class:`Client` handle and log out later...
+
+>>> session = user.login(server_api)
+>>> # Do some stuff
+>>> user.logout()
+
+Or you can use the context manager so that it will log out automatically when you are done.
+
+>>> with photoprysm.user_session(user, server_api) as session:
+>>>     # Do some stuff
+>>> # Logged out
+
 Credits
 -------
 
