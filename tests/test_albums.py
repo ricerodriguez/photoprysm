@@ -66,6 +66,18 @@ def session(user, server_api):
             url = urljoin(server_api, 'session'),
             json = {
                 "access_token": "example_token",
+                "config": {
+                    "mode": "user",
+                    "name": "PhotoPrism",
+                    "about": "PhotoPrism®",
+                    "edition": "plus",
+                    "tier": 1,
+                    "membership": "ce",
+                    "customer": "",
+                    "mapKey": "",
+                    "downloadToken": "example_dl_token",
+                    "previewToken": "example_pv_token"
+                },
                 "expires_in": 1209599,
                 "id": "example_id",
                 "provider": "local",

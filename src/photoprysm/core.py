@@ -1,3 +1,4 @@
+import json
 import requests
 import logging
 from typing import Optional
@@ -56,13 +57,15 @@ class User:
     username: str
     password: str = field(repr = False)
     uid: str | None = None
+    download_token: str | None = None
 
     def login(self, server_api: str) -> requests.Session:
         '''Login to the server as a User'''
         url = urljoin(server_api, 'session')
         self._url  = url
-        data = '{"username":"'+self.username+'", '
-        data += '"password":"'+self.password+'"}'
+        data = json.dumps({'username': self.username, 'password': self.password})
+        # data = '{"username":"'+self.username+'", '
+        # data += '"password":"'+self.password+'"}'
         resp = requests.post(
             url,
             data=data,
@@ -72,6 +75,7 @@ class User:
         self._session = requests.Session()
         self._session.auth = PhotoprismAccessToken(resp.json()['id'])
         self.uid = self.uid or resp.json()['user']['UID']
+        self.download_token = self.download_token or resp.json()['config']['downloadToken']
         return self._session
 
     def request(self, **kwargs) -> requests.Response:
@@ -89,6 +93,7 @@ class User:
         '''Logout of the server as a User'''
         resp = self._session.delete(self._url)
         resp.raise_for_status()
+        self.download_token = None
         self._session.close()
 
 class PhotoprismAccessToken(requests.auth.AuthBase):
@@ -121,10 +126,10 @@ def get_api_url(
         netloc: Optional[str] = None,
         scheme: Optional[str] = None) -> str:
     '''
-    Constructs the server API URL. 
+    Constructs the base URL for the Photoprism server API. 
 
-    :param netloc: Network location. This is the hostname, with the port if necessary. Defaults to 'localhost:2342'.
-    :param scheme: Scheme to send requests with. Must be either 'http' or 'https'.
+    :param netloc: Network location. This is the hostname, with the port if necessary. Defaults to ``'localhost:2342'``.
+    :param scheme: Scheme to send requests with. Must be either ``'http'`` or ``'https'``.
     '''
     u_netloc = netloc or 'localhost:2342'
     u_scheme = scheme or 'http'
@@ -142,6 +147,7 @@ def request(
     '''Send the request from a requests.Session.
 
     :param session: requests.Session handle with the access token pre-configured
+    :type session: requests.Session
     :param url: URL to send the requests to
     :param method: Method of request, e.g. GET, POST, PUT, DELETE
     :param headers: Headers to send the request with. Defaults to {'accept:application/json', 'Content-Type':'application/json'}
