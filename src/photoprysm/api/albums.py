@@ -18,19 +18,6 @@ ValidSortOrderTypes = enum.StrEnum(
     'ValidSortOrderTypes',
     'FAVORITES,NAME,TITLE,ADDED,EDITED')
 
-def _parse_to_album(**kwargs) -> Album:
-    '''Convert a dict of key value pairs to an Album.'''
-    attrs = {}
-    for k in ['UID', 'Title', 'Description', 'Favorite', 'Private']:
-        if kwargs.get(k) is None: continue
-        attrs[k.lower()] = kwargs.get(k)
-    return Album(json = kwargs, **attrs)
-
-def _parse_to_share_link(**kwargs) -> ShareLink:
-    '''Convert a dict of key value pairs to an ShareLink.'''
-    share_link_dict = core._askwargs(**kwargs)
-    return ShareLink(**share_link_dict)
-
 def get_by_query(
         session: requests.Session,
         server_api: str,
@@ -67,8 +54,7 @@ def get_by_query(
         params = params)
     rv = []
     for raw_album in resp.json():
-        print(raw_album)
-        rv.append(_parse_to_album(**raw_album))
+        rv.append(Album.fromjson(raw_album))
     return rv
             
 def create(
@@ -94,7 +80,7 @@ def create(
         url = urljoin(server_api, endpoint),
         method = 'POST',
         data = data)
-    return _parse_to_album(**resp.json())
+    return Album.fromjson(resp.json())
 
 def get_by_uid(
         session: requests.Session,
@@ -113,7 +99,7 @@ def get_by_uid(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'GET')
-    return _parse_to_album(**resp.json())
+    return Album.fromjson(resp.json())
 
 def update(
         session: requests.Session,
@@ -136,7 +122,7 @@ def update(
         url = urljoin(server_api, endpoint),
         method = 'PUT',
         data = core.asjson(properties))
-    return _parse_to_album(**resp.json())
+    return Album.fromjson(resp.json())
 
 def delete(
         session: requests.Session,
@@ -213,7 +199,7 @@ def like(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'POST')
-    return _parse_to_album(**resp.json())
+    return Album.fromjson(resp.json())
 
 def unlike(
         session: requests.Session,
@@ -230,7 +216,7 @@ def unlike(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'DELETE')
-    return _parse_to_album(**resp.json())
+    return Album.fromjson(resp.json())
 
 def get_share_links(
         session: requests.Session,
@@ -249,7 +235,7 @@ def get_share_links(
         method = 'GET')
     rv = []
     for link in resp.json():
-        rv.append(_parse_to_share_link(**resp.json()))
+        rv.append(ShareLink.fromjson(resp.json()))
     return rv
 
 def add_share_link(
@@ -261,7 +247,7 @@ def add_share_link(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'POST')
-    return ShareLink(_parse_to_share_link(**resp.json()))
+    return ShareLink.fromjson(resp.json())
 
 def update_share_link(
         session: requests.Session,
@@ -276,7 +262,7 @@ def update_share_link(
         method = 'PUT',
         data = core.asjson(linkprops)
     )
-    return ShareLink(_parse_to_share_link(**resp.json()))
+    return ShareLink.fromjson(resp.json())
 
 def delete_share_link(
         session: requests.Session,
@@ -289,7 +275,7 @@ def delete_share_link(
         url = urljoin(server_api, endpoint),
         method = 'DELETE'
     )
-    return ShareLink(_parse_to_share_link(**resp.json()))
+    return ShareLink.fromjson(resp.json())
 
 def get_cover_image(
         user: core.User,

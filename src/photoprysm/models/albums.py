@@ -1,8 +1,9 @@
+from .base import ModelBase
 from dataclasses import dataclass, InitVar, field
-from typing import Optional
+from typing import Optional, Self, Any
 
 @dataclass
-class Album:
+class Album(ModelBase, required = ['uid']):
     '''Dataclass for holding data about an album.
 
     :param str uid: UID of the album
@@ -19,8 +20,7 @@ class Album:
     favorite: Optional[bool] = None
     private: Optional[bool] = None
     description: Optional[str] = None
-    json: Optional[dict[str,str]] = None
-
+        
 @dataclass
 class AlbumProperties:
     '''This is for updating album properties.
