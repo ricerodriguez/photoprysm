@@ -13,13 +13,14 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-def get_by_query(
+def get(
         session: requests.Session,
         server_api: str,
-        query: str,
+        *,
         count: int = 1,
-        merged: bool = True,
         quality: int = 0,
+        merged: Optional[bool] = None,
+        query: Optional[str] = None,
         offset: Optional[int] = None,
         order: Optional[str] = None,
         public: Optional[bool] = None,
@@ -41,7 +42,30 @@ def get_by_query(
     :returns: List of Photos that match from the query
     :rtype: list[Photo]
     '''
-    raise NotImplementedError('This has not yet been implemented.')
+    endpoint = 'photos'
+    if quality is not None and quality not in range(0,7):
+        raise TypeError('Quality is out of range. It must be between 0 and 7.')
+    _merged = None if merged is None else str(merged).lower()
+    _params = {'count': count,
+               'quality': quality,
+               'q': query,
+               'merged': _merged,
+               's': None if album is None else album.uid,
+               'path': None if path is None else str(path),
+               'video': video}
+    params = {}
+    for k,v in _params.items():
+        if v is None: continue
+        params[k] = v
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'GET',
+        params = params)
+    rv = []
+    for raw_photo in resp.json():
+        rv.append(Photo.fromjson(raw_photo))
+    return rv
 
 def get_by_uid(
         session: requests.Session,
@@ -56,7 +80,12 @@ def get_by_uid(
     :returns: Photo with matching UID
     :rtype: Photo
     '''
-    raise NotImplementedError('This has not yet been implemented.')
+    endpoint = f'photos/{urlquote(uid)}'
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'GET')
+    return Photo.fromjson(resp.json())
     
 def update(
         session: requests.Session,
