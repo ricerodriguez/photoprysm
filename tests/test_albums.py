@@ -61,7 +61,7 @@ def test_get_albums(user, server_api, session):
         status = 200,
         json = [__GET_ALBUMS_JSON]
     )
-    albums_list = albums.get_by_query(session, server_api, 1)
+    albums_list = albums.get(session, server_api, query = 1)
     assert isinstance(albums_list, list)
     for k,v in {
         'uid': __GET_ALBUMS_JSON['UID'],
@@ -75,7 +75,7 @@ def test_get_albums(user, server_api, session):
 # in the server_api fixture
 def test_real_get_albums(user, server_api):
     with core.user_session(user, server_api) as session:
-        albums_list = albums.get_by_query(session, server_api, 'Test Album')
+        albums_list = albums.get(session, server_api, query = 'Test Album')
     assert albums_list[0].title == 'Test Album'
 
 @responses.activate
