@@ -145,35 +145,6 @@ def client_session(client: Client, server_api: str):
     finally:
         client.logout()
     
-# Semi-private
-def _camel_to_snake(camel: str):
-    '''Taken from https://stackoverflow.com/a/1176023'''
-    tmp = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', camel)
-    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', tmp).lower()
-
-def _snake_to_camel(snake: str):
-    '''Modified from https://stackoverflow.com/a/1176023'''
-    rv = ''.join(word.title() for word in snake.split('_'))
-    if rv in ['Uid', 'Json']:
-        rv = rv.upper()
-    return rv
-
-def _asjson(cls: dataclass) -> str:
-    d0 = asdict(cls)
-    d1 = {}
-    for k,v in d0.items():
-        if v is None: continue
-        key = _snake_to_camel(k)
-        d1[key] = v
-    return json.dumps(d1)
-
-def _askwargs(**kwargs):
-    d = {}
-    for k, v in kwargs.items():
-        if v is None: continue
-        d[_camel_to_snake(k)] = v
-    return d
-
 # Public
 def get_api_url(
         netloc: Optional[str] = None,
