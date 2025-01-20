@@ -22,7 +22,7 @@ class Album(ModelBase, required = ['uid']):
     description: Optional[str] = None
         
 @dataclass
-class AlbumProperties:
+class AlbumProperties(ModelBase):
     '''This is for updating album properties.
     
     :param str|None caption: (optional)

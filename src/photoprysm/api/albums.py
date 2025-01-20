@@ -18,11 +18,12 @@ ValidSortOrderTypes = enum.StrEnum(
     'ValidSortOrderTypes',
     'FAVORITES,NAME,TITLE,ADDED,EDITED')
 
-def get_by_query(
+def get(
         session: requests.Session,
         server_api: str,
-        query: str,
+        *,
         count: int = 1,
+        query: Optional[str] = None,
         offset: Optional[int] = None,
         order: Optional[str] = None) -> list[Album]:
     '''
