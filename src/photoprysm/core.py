@@ -180,17 +180,12 @@ def request(
     :returns: Response from the server after sending the request
     :rtype: `requests.Response`_
     '''
-    u_headers = {
-        'accept': 'application/json',
-        'Content-Type': 'application/json',
-    }
-    if headers: u_headers.update(headers)
     resp = session.request(
         method = method,
         url = url,
         params = params,
         data = data,
-        headers = u_headers)
+        headers = headers)
     # Raises the error if one occurred
     resp.raise_for_status()
     return resp

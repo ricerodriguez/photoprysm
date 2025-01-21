@@ -86,7 +86,69 @@ def get_by_uid(
         url = urljoin(server_api, endpoint),
         method = 'GET')
     return Photo.fromjson(resp.json())
+
+def get_by_file(
+        session: requests.Session,
+        server_api: str,
+        _file: PhotoFile) -> Photo:
+    # /files/{sha-1 hash}
+    raise NotImplementedError('This has not yet been implemented.')    
     
+def archive(
+        session: requests.Session,
+        server_api: str,
+        photo: Photo) -> None:
+    batch_archive(session, server_api, [photo])
+
+def batch_archive(
+        session: requests.Session,
+        server_api: str,
+        photos: list[Photo]) -> None:
+    endpoint = 'batch/photos/archive'
+    data = json.dumps({'photos': [photo.uid for photo in photos]})
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'POST',
+        data = data)
+
+def restore(
+        session: requests.Session,
+        server_api: str,
+        photo: Photo) -> None:
+    batch_restore(session, server_api, [photo])
+
+def batch_restore(
+        session: requests.Session,
+        server_api: str,
+        photos: list[Photo]) -> None:
+    endpoint = 'batch/photos/restore'
+    data = json.dumps({'photos': [photo.uid for photo in photos]})
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'POST',
+        data = data)
+
+def delete(
+        session: requests.Session,
+        server_api: str,
+        photo: Photo) -> None:
+    batch_archive(session, server_api, [photo])
+    batch_delete(session, server_api, [photo])
+
+def batch_delete(
+        session: requests.Session,
+        server_api: str,
+        photos: list[Photo]) -> None:
+    endpoint = 'batch/photos/delete'
+    data = json.dumps({'photos': [photo.uid for photo in photos]})
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'POST',
+        data = data)
+
 def update(
         session: requests.Session,
         server_api: str,
@@ -102,7 +164,14 @@ def update(
     :returns: Updated Photo
     :rtype: Photo
     '''
-    raise NotImplementedError('This has not yet been implemented.')
+    endpoint = f'photos/{photo.uid}'
+    data = json.dumps(photo_props.json)
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'PUT',
+        data = data)
+    return Photo.fromjson(resp.json())
     
 def approve(
         session: requests.Session,
@@ -117,7 +186,12 @@ def approve(
     :returns: Approved Photo
     :rtype: Photo
     '''
-    raise NotImplementedError('This has not yet been implemented.')
+    endpoint = f'photos/{photo.uid}/approve'
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'POST')
+    return [Photo(photo) for photo in resp.json()['photo']]
     
 def set_primary_file(
         session: requests.Session,
@@ -135,6 +209,24 @@ def set_primary_file(
     :rtype: Photo
     '''
     raise NotImplementedError('This has not yet been implemented.')
+
+def set_private(
+        session: requests.Session,
+        server_api: str,
+        photo: Photo) -> None:
+    batch_set_private(session, server_api, [photo])
+
+def batch_set_private(
+        session: requests.Session,
+        server_api: str,
+        photos: list[Photo]) -> None:
+    endpoint = f'batch/photos/private'
+    data = json.dumps({'photos': [photo.uid for photo in photos]})
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'POST',
+        data = data)
 
 def pop_file(
         session: requests.Session,
@@ -165,7 +257,11 @@ def like(
     :raises requests.HTTPError: If it runs into an HTTP error while sending the request
     :returns: None
     '''
-    raise NotImplementedError('This has not yet been implemented.')
+    endpoint = f'photos/{photo.uid}/like'
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'POST')
 
 def unlike(
         session: requests.Session,
