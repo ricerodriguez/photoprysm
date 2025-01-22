@@ -19,10 +19,10 @@ def client():
     )
 
 @pytest.fixture
-def user():
+def user(user_password):
     return core.User(
         username='admin',
-        password='password'
+        password=user_password
     )
 
 @pytest.fixture
