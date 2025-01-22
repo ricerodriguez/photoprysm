@@ -20,8 +20,8 @@ ValidSortOrderTypes = enum.StrEnum(
 
 def get(
         session: requests.Session,
-        server_api: str,
-        *,
+        server_api: str, *,
+        # Keyword only
         count: int = 1,
         query: Optional[str] = None,
         offset: Optional[int] = None,
@@ -105,19 +105,19 @@ def get_by_uid(
 def update(
         session: requests.Session,
         server_api: str,
-        album: Album,
+        album: Album | str,
         properties: AlbumProperties) -> Album:
     '''
     Update the album properties.
 
     :param requests.Session session: Session to make the request from
     :param str server_api: String with the base URL for the API
-    :param Album album: Album to update
+    :param Album|str album: Album to update
     :param AlbumProperties properties: Properties to update the album with
     :returns: Updated album
     :rtype: Album
     '''
-    endpoint = f'albums/{urlquote(album.uid)}'
+    endpoint = f'albums/{core._extract_uid(album)}'
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -128,13 +128,16 @@ def update(
 def delete(
         session: requests.Session,
         server_api: str,
-        album: Album) -> None:
+        album: Album | str) -> None:
     '''
     :param session: Session to make the request from
     :param server_api: String with the base URL for the API
     :param Album album: Album to delete
     '''
-    endpoint = f'albums/{urlquote(album.uid)}'
+    # Validate user input
+    uid = core._extract_uid(album)
+    if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
+    endpoint = f'albums/{uid}'
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -150,7 +153,11 @@ def batch_delete(
     :param albums: List of albums to delete
     :type albums: list[Album]
     '''
-    selection = json.dumps({'albums': [album.uid for album in albums]})
+    uids = core._extract_uids(albums)
+    if any([uid is None for uid in uids]):
+        raise TypeError('One of the albums has neither a \'uid\' '
+                        'attribute nor is it a str')
+    selection = json.dumps({'albums': uids})
     endpoint = 'batch/albums/delete'
     resp = core.request(
         session = session,
@@ -162,8 +169,8 @@ def batch_delete(
 def clone(
         session: requests.Session,
         server_api: str,
-        album: Album,
-        albums_to_copy: list[Album]) -> None:
+        album: Album | str,
+        albums_to_copy: list[Album | str]) -> None:
     '''
     Copies the photos from other albums to an existing album
 
@@ -173,10 +180,15 @@ def clone(
     :param albums_to_copy: List of albums containing the photos that will be copied
     :type albums_to_copy: list[Album]
     '''
-    endpoint = f'albums/{urlquote(album.uid)}/clone'
-    selection = json.dumps(
-        {'albums': [album_to_copy.uid for album_to_copy in albums_to_copy]}
-    )
+    # Validate user input
+    uid = core._extract_uid(album)
+    if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
+    uids_to_copy = core._extract_uids(albums_to_copy)
+    if any([uid is None for uid in uids_to_copy]):
+        raise TypeError('One of the albums to copy has neither a \'uid\' '
+                        'attribute nor is it a str')
+    endpoint = f'albums/{uid}/clone'
+    selection = json.dumps({'albums': uids_to_copy})
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -187,7 +199,7 @@ def clone(
 def like(
         session: requests.Session,
         server_api: str,
-        album: Album) -> Album:
+        album: Album | str) -> Album:
     '''
     Sets the favorite flag for an album.
 
@@ -195,7 +207,9 @@ def like(
     :param str server_api: String with the base URL for the API
     :param str uid: Album UID
     '''
-    endpoint = f'albums/{urlquote(album.uid)}/like'
+    uid = core._extract_uid(album)
+    if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
+    endpoint = f'albums/{uid}/like'
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -212,7 +226,9 @@ def unlike(
     :param str server_api: String with the base URL for the API
     :param str uid: Album UID
     '''
-    endpoint = f'albums/{urlquote(album.uid)}/like'
+    uid = core._extract_uid(album)
+    if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
+    endpoint = f'albums/{uid}/like'
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -222,14 +238,16 @@ def unlike(
 def get_share_links(
         session: requests.Session,
         server_api: str,
-        album: Album) -> list[ShareLink]:
+        album: Album | str) -> list[ShareLink]:
     '''
     Returns all share links for the album matching the UID
 
     :param session: Session to make the request from
     :param server_api: String with the base URL for the API
     '''
-    endpoint = f'albums/{urlquote(album.uid)}/links'
+    uid = core._extract_uid(album)
+    if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
+    endpoint = f'albums/{uid}/links'
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -242,8 +260,10 @@ def get_share_links(
 def add_share_link(
         session: requests.Session,
         server_api: str,
-        album: Album) -> ShareLink:
-    endpoint = f'albums/{urlquote(album.uid)}/links'
+        album: Album | str) -> ShareLink:
+    uid = core._extract_uid(album)
+    if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
+    endpoint = f'albums/{uid}/links'
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -255,28 +275,32 @@ def update_share_link(
         server_api: str,
         share_link: ShareLink,
         link_props: ShareLinkProperties) -> ShareLink:
-    endpoint = (f'albums/{urlquote(share_link.uid)}/'
-                f'links/{urlquote(share_link.share_uid)}')
-    resp = core.request(
-        session = session,
-        url = urljoin(server_api, endpoint),
-        method = 'PUT',
-        data = core.asjson(linkprops)
-    )
-    return ShareLink.fromjson(resp.json())
+    # share_link_uid = core._extract_uid(share_link)
+    # if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
+    # endpoint = (f'albums/{urlquote(share_link.share_uid)}/'
+    #             f'links/{urlquote(share_link.uid)}')
+    # resp = core.request(
+    #     session = session,
+    #     url = urljoin(server_api, endpoint),
+    #     method = 'PUT',
+    #     data = core.asjson(linkprops)
+    # )
+    # return ShareLink.fromjson(resp.json())
+    raise NotImplementedError('This has not been implemented yet.')
 
 def delete_share_link(
         session: requests.Session,
         server_api: str,
         share_link: ShareLink) -> None:
-    endpoint = (f'albums/{urlquote(share_link.uid)}/'
-                f'links/{urlquote(share_link.share_uid)}')
-    resp = core.request(
-        session = session,
-        url = urljoin(server_api, endpoint),
-        method = 'DELETE'
-    )
-    return ShareLink.fromjson(resp.json())
+    # endpoint = (f'albums/{urlquote(share_link.uid)}/'
+    #             f'links/{urlquote(share_link.share_uid)}')
+    # resp = core.request(
+    #     session = session,
+    #     url = urljoin(server_api, endpoint),
+    #     method = 'DELETE'
+    # )
+    # return ShareLink.fromjson(resp.json())
+    raise NotImplementedError('This has not been implemented yet.')    
 
 def get_cover_image(
         user: core.User,
