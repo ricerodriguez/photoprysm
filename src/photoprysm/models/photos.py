@@ -8,7 +8,6 @@ class PhotoFile(ModelBase, required = ['uid', 'photo_uid']):
     '''
     uid: str
     photo_uid: str
-    
 
 @dataclass
 class Photo(ModelBase, required = ['uid']):

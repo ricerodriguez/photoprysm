@@ -24,7 +24,7 @@ def get(
         offset: Optional[int] = None,
         order: Optional[str] = None,
         public: Optional[bool] = None,
-        album: Optional[Album] = None,
+        album: Optional[Album | str] = None,
         path: Optional[os.PathLike] = None,
         video: Optional[bool] = None) -> list[Photo]:
     '''Get list of Photos by query.
@@ -35,7 +35,7 @@ def get(
     :param int count: (optional) Number of matches to return. Defaults to 1.
     :param bool merged: (optional) If True, consecutive files with the same photo ID are merged into a single result with the Files property containing the related files.
     :param int quality: (optional) Minimum quality score. Defaults to 0 to disable limit. Must be within range of 1-7.
-    :param Album album: (optional) Album to search under
+    :param Album|str album: (optional) Album to search under. You can provide a handle to an Album instance or you can provide the UID as a string directly.
     :param os.PathLike path: (optional) Path to the photo
     :param bool is_video: (optional) True if result should be of type video
     :raises requests.HTTPError: If the request is poorly formed or the server is not accepting requests
@@ -50,7 +50,7 @@ def get(
                'quality': quality,
                'q': query,
                'merged': _merged,
-               's': None if album is None else album.uid,
+               's': core._extract_uid(album),
                'path': None if path is None else str(path),
                'video': video}
     params = {}
@@ -97,33 +97,31 @@ def get_by_file(
 def archive(
         session: requests.Session,
         server_api: str,
-        photo: Photo) -> None:
-    batch_archive(session, server_api, [photo])
+        photo: Photo | str) -> None:
+    batch_archive(session, server_api, [core._extract_uid(photo)])
 
 def batch_archive(
         session: requests.Session,
         server_api: str,
-        photos: list[Photo]) -> None:
-    endpoint = 'batch/photos/archive'
-    data = json.dumps({'photos': [photo.uid for photo in photos]})
-    resp = core.request(
+        photos: list[Photo | str]) -> None:
+    core.request(
         session = session,
-        url = urljoin(server_api, endpoint),
+        url = urljoin(server_api, 'batch/photos/archive'),
         method = 'POST',
-        data = data)
+        data = json.dumps({'photos': core._extract_uids(photos)}))
 
 def restore(
         session: requests.Session,
         server_api: str,
-        photo: Photo) -> None:
-    batch_restore(session, server_api, [photo])
+        photo: Photo | str) -> None:
+    batch_restore(session, server_api, [core._extract_uid(photo)])
 
 def batch_restore(
         session: requests.Session,
         server_api: str,
-        photos: list[Photo]) -> None:
+        photos: list[Photo | str]) -> None:
     endpoint = 'batch/photos/restore'
-    data = json.dumps({'photos': [photo.uid for photo in photos]})
+    data = json.dumps({'photos': core._extract_uids(photos)})
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -133,16 +131,16 @@ def batch_restore(
 def delete(
         session: requests.Session,
         server_api: str,
-        photo: Photo) -> None:
-    batch_archive(session, server_api, [photo])
-    batch_delete(session, server_api, [photo])
+        photo: Photo | str) -> None:
+    batch_archive(session, server_api, [core._extract_uid(photo)])
+    batch_delete(session, server_api, [core._extract_uid(photo)])
 
 def batch_delete(
         session: requests.Session,
         server_api: str,
-        photos: list[Photo]) -> None:
+        photos: list[Photo | str]) -> None:
     endpoint = 'batch/photos/delete'
-    data = json.dumps({'photos': [photo.uid for photo in photos]})
+    data = json.dumps({'photos': core._extract_uids(photos)})
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -152,7 +150,7 @@ def batch_delete(
 def update(
         session: requests.Session,
         server_api: str,
-        photo: Photo,
+        photo: Photo | str,
         photo_props: PhotoProperties) -> Photo:
     '''Update a photo with new properties
 
@@ -164,7 +162,7 @@ def update(
     :returns: Updated Photo
     :rtype: Photo
     '''
-    endpoint = f'photos/{photo.uid}'
+    endpoint = f'photos/{core._extract_uid(photo)}'
     data = json.dumps(photo_props.json)
     resp = core.request(
         session = session,
@@ -176,7 +174,7 @@ def update(
 def approve(
         session: requests.Session,
         server_api: str,
-        photo: Photo) -> Photo:
+        photo: Photo | str) -> Photo:
     '''Mark a Photo in review as approved
 
     :param requests.Session session: Pre-configured `requests.Session`_ object to send the request with
@@ -186,17 +184,17 @@ def approve(
     :returns: Approved Photo
     :rtype: Photo
     '''
-    endpoint = f'photos/{photo.uid}/approve'
+    endpoint = f'photos/{core._extract_uid(photo)}/approve'
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'POST')
-    return [Photo(photo) for photo in resp.json()['photo']]
+    return [Photo(photo) for photo in resp.json()['photo']][0]
     
 def set_primary_file(
         session: requests.Session,
         server_api: str,
-        photo: Photo,
+        photo: Photo | str,
         _file: PhotoFile) -> Photo:
     '''Set the primary file for the Photo
 
@@ -214,14 +212,31 @@ def set_private(
         session: requests.Session,
         server_api: str,
         photo: Photo) -> None:
+    '''Set photo as private.
+
+    :param requests.Session session: Pre-configured `requests.Session`_ object to send the request with
+    :param str server_api: Base URL of the server API
+    :param Photo photo: Photo to set as private
+    :raises requests.HTTPError: If it runs into an HTTP error while sending the request
+    :returns: None
+    '''
     batch_set_private(session, server_api, [photo])
 
 def batch_set_private(
         session: requests.Session,
         server_api: str,
-        photos: list[Photo]) -> None:
+        photos: list[Photo | str]) -> None:
+    '''Set multiple photos as private.
+
+    :param requests.Session session: Pre-configured `requests.Session`_ object to send the request with
+    :param str server_api: Base URL of the server API
+    :param photos: Photos to set as private
+    :type photos: list[Photo]
+    :raises requests.HTTPError: If it runs into an HTTP error while sending the request
+    :returns: None
+    '''
     endpoint = f'batch/photos/private'
-    data = json.dumps({'photos': [photo.uid for photo in photos]})
+    data = json.dumps({'photos': core._extract_uids(photos)})
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -231,7 +246,7 @@ def batch_set_private(
 def pop_file(
         session: requests.Session,
         server_api: str,
-        photo: Photo,
+        photo: Photo | str,
         _file: PhotoFile) -> PhotoFile:
     '''Pop a file off the stack for the Photo
 
@@ -248,7 +263,7 @@ def pop_file(
 def like(
         session: requests.Session,
         server_api: str,
-        photo: Photo) -> None:
+        photo: Photo | str) -> None:
     '''Mark a Photo as a favorite
 
     :param requests.Session session: Pre-configured `requests.Session`_ object to send the request with
@@ -257,7 +272,7 @@ def like(
     :raises requests.HTTPError: If it runs into an HTTP error while sending the request
     :returns: None
     '''
-    endpoint = f'photos/{photo.uid}/like'
+    endpoint = f'photos/{core._extract_uid(photo)}/like'
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -266,7 +281,7 @@ def like(
 def unlike(
         session: requests.Session,
         server_api: str,
-        photo: Photo) -> None:
+        photo: Photo | str) -> None:
     '''Unmark a Photo as a favorite
 
     :param requests.Session session: Pre-configured `requests.Session`_ object to send the request with

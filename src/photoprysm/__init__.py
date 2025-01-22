@@ -4,7 +4,12 @@ __email__ = 'victoriarice@protonmail.com'
 __version__ = '0.0.1'
 
 # Make the public members of the core accessible from the top
-from .core import *
+from .core import Client
+from .core import User
+from .core import user_session
+from .core import client_session
+from .core import get_api_url
+from .core import request
 
 # Make the API accessible from the top
 from .api import albums

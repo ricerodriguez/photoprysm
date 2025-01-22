@@ -2,12 +2,13 @@ import re
 import json
 import requests
 import logging
-from typing import Optional
+from typing import Optional, TypeVar
 from urllib.parse import urljoin
 from dataclasses import dataclass, InitVar, field, asdict
 import contextlib
 
 logger = logging.getLogger(__name__)
+M = TypeVar('M')
 
 @dataclass
 class Client:
@@ -189,3 +190,13 @@ def request(
     # Raises the error if one occurred
     resp.raise_for_status()
     return resp
+
+def _extract_uid[M](obj: M | str) -> str:
+    if hasattr(obj, 'uid'): return obj.uid
+    elif isinstance(obj, str): return obj
+    else: return None
+
+def _extract_uids[M](collection: list[M], /) -> list[str]:
+    return [_extract_uid(obj) for obj in collection]
+
+    
