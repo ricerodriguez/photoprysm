@@ -117,7 +117,11 @@ def update(
     :returns: Updated album
     :rtype: Album
     '''
-    endpoint = f'albums/{core._extract_uid(album)}'
+    # Validate user input
+    album_uid = core._extract_uid(album)
+    if album_uid is None:
+        raise TypeError('Must pass in UID as str or as attribute of object')
+    endpoint = f'albums/{album_uid}'
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),

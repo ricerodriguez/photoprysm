@@ -42,7 +42,7 @@ def get(
     :returns: List of Photos that match from the query
     :rtype: list[Photo]
     '''
-    endpoint = 'photos'
+    # Validate user input
     if quality is not None and quality not in range(0,7):
         raise TypeError('Quality is out of range. It must be between 0 and 7.')
     _merged = None if merged is None else str(merged).lower()
@@ -59,7 +59,7 @@ def get(
         params[k] = v
     resp = core.request(
         session = session,
-        url = urljoin(server_api, endpoint),
+        url = urljoin(server_api, 'photos'),
         method = 'GET',
         params = params)
     rv = []
@@ -98,30 +98,40 @@ def archive(
         session: requests.Session,
         server_api: str,
         photo: Photo | str) -> None:
-    batch_archive(session, server_api, [core._extract_uid(photo)])
+    batch_archive(session, server_api, [photo])
 
 def batch_archive(
         session: requests.Session,
         server_api: str,
         photos: list[Photo | str]) -> None:
+    # Validate user input
+    uids = core._extract_uids(photos)
+    if any([uid is None for uid in uids]):
+        raise TypeError('One of the photos has neither a \'uid\' '
+                        'attribute nor is it a str')
     core.request(
         session = session,
         url = urljoin(server_api, 'batch/photos/archive'),
         method = 'POST',
-        data = json.dumps({'photos': core._extract_uids(photos)}))
+        data = json.dumps({'photos': uids}))
 
 def restore(
         session: requests.Session,
         server_api: str,
         photo: Photo | str) -> None:
-    batch_restore(session, server_api, [core._extract_uid(photo)])
+    batch_restore(session, server_api, [photo])
 
 def batch_restore(
         session: requests.Session,
         server_api: str,
         photos: list[Photo | str]) -> None:
+    # Validate user input
+    uids = core._extract_uids(photos)
+    if any([uid is None for uid in uids]):
+        raise TypeError('One of the photos has neither a \'uid\' '
+                        'attribute nor is it a str')
     endpoint = 'batch/photos/restore'
-    data = json.dumps({'photos': core._extract_uids(photos)})
+    data = json.dumps({'photos': uids})
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -132,15 +142,20 @@ def delete(
         session: requests.Session,
         server_api: str,
         photo: Photo | str) -> None:
-    batch_archive(session, server_api, [core._extract_uid(photo)])
-    batch_delete(session, server_api, [core._extract_uid(photo)])
+    batch_archive(session, server_api, [photo])
+    batch_delete(session, server_api, [photo])
 
 def batch_delete(
         session: requests.Session,
         server_api: str,
         photos: list[Photo | str]) -> None:
+    # Validate user input
+    uids = core._extract_uids(photos)
+    if any([uid is None for uid in uids]):
+        raise TypeError('One of the photos has neither a \'uid\' '
+                        'attribute nor is it a str')
     endpoint = 'batch/photos/delete'
-    data = json.dumps({'photos': core._extract_uids(photos)})
+    data = json.dumps({'photos': uids})
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -162,7 +177,11 @@ def update(
     :returns: Updated Photo
     :rtype: Photo
     '''
-    endpoint = f'photos/{core._extract_uid(photo)}'
+    # Validate user input
+    uid = core._extract_uid(photo)
+    if uid is None:
+        raise TypeError('Must pass in UID as str or as attribute of object')
+    endpoint = f'photos/{uid}'
     data = json.dumps(photo_props.json)
     resp = core.request(
         session = session,
@@ -184,7 +203,11 @@ def approve(
     :returns: Approved Photo
     :rtype: Photo
     '''
-    endpoint = f'photos/{core._extract_uid(photo)}/approve'
+    # Validate user input
+    uid = core._extract_uid(photo)
+    if uid is None:
+        raise TypeError('Must pass in UID as str or as attribute of object')
+    endpoint = f'photos/{uid}/approve'
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -211,7 +234,7 @@ def set_primary_file(
 def set_private(
         session: requests.Session,
         server_api: str,
-        photo: Photo) -> None:
+        photo: Photo | str) -> None:
     '''Set photo as private.
 
     :param requests.Session session: Pre-configured `requests.Session`_ object to send the request with
@@ -235,8 +258,13 @@ def batch_set_private(
     :raises requests.HTTPError: If it runs into an HTTP error while sending the request
     :returns: None
     '''
+    # Validate user input
+    uids = core._extract_uids(photos)
+    if any([uid is None for uid in uids]):
+        raise TypeError('One of the photos has neither a \'uid\' '
+                        'attribute nor is it a str')
     endpoint = f'batch/photos/private'
-    data = json.dumps({'photos': core._extract_uids(photos)})
+    data = json.dumps({'photos': uids})
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
