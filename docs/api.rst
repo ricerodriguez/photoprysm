@@ -91,7 +91,7 @@ models to be used for interfacing with. These classes do not have many
 All functions for interfacing with the album API endpoints can be
 found in the ``photoprysm.albums`` module.
 
-.. autofunction:: get_by_query
+.. autofunction:: get
 .. autofunction:: get_by_uid                  
 .. autofunction:: create
 .. autofunction:: update
@@ -114,7 +114,7 @@ found in the ``photoprysm.albums`` module.
 All functions for interfacing with the photo API endpoints can be
 found in the ``photoprysm.photos`` module.
 
-.. autofunction:: get_by_query
+.. autofunction:: get
 .. autofunction:: get_by_uid
 .. autofunction:: update
 .. autofunction:: approve
