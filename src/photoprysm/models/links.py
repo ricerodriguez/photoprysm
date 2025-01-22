@@ -1,9 +1,18 @@
 import datetime
+
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Self
+from urllib.parse import urljoin
+
+from .base import ModelBase
 
 @dataclass
-class ShareLink:
+class ShareLink(ModelBase,
+                required = [
+                    'token',
+                    'share_uid',
+                    'slug',
+                    'uid']):
     '''Data class for holding information about a share link
 
     :param str comment: Comment that was added when the share link was created
@@ -13,26 +22,26 @@ class ShareLink:
     :param int max_views: (optional) Maximum number of views until the link expires
     :param str|datetime.datetime modified_at: Time when the link was last modified
     :param int perm: ???
-    :param str share_uid: UID of the share link
+    :param str share_uid: UID of the album the link points to
     :param str slug: URL slug of the album the share link is for
     :param str token: Token of the share link, used to construct the URL
-    :param str uid: Album UID the share link is for
+    :param str uid: UID of the share link itself
     :param bool verify_password: (optional) Set to True to require user to verify password when they visit the share link
     :param int views: (optional) Number of views the share link has so far
     '''
-    comment: str
-    created_at: str|datetime.datetime
-    modified_at: str|datetime.datetime
-    created_by: str
+    token: str
     share_uid: str
     slug: str
-    token: str
     uid: str
-    expires: int = 0
-    max_views: int = 0
-    perm: int = 0
-    verify_password: bool = True
-    views: int = 0
+    comment: Optional[str] = None
+    created_at: Optional[str] = None 
+    modified_at: Optional[str] = None
+    created_by: Optional[str] = None
+    expires: Optional[int] = None
+    max_views: Optional[int] = None
+    perm: Optional[int] = None
+    verify_password: Optional[bool] = None
+    views: Optional[int] = None
 
     def __post_init__(self):
         if isinstance(self.created_at, str):
@@ -41,10 +50,14 @@ class ShareLink:
         if isinstance(self.modified_at, str):
             # TODO: Convert to datetime.datetime
             pass
-        
+
+    def get_url(self, host: str, https: bool = True) -> str:
+        scheme = 'https' if https else 'http'
+        base = f'{scheme}://{host}/s/'
+        return urljoin(urljoin(base, self.token), self.slug)
 
 @dataclass
-class ShareLinkProperties:
+class ShareLinkProperties(ModelBase):
     '''Share link properties. This is for setting and updating properties of share links.
     
     :param bool can_comment: (optional) Allow visitors using the share link to comment.

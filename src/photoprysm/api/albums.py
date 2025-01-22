@@ -8,7 +8,7 @@ from .. import core
 from ..models.albums import Album, AlbumProperties
 from ..models.links import ShareLink, ShareLinkProperties
 
-from urllib.parse import urljoin, quote as urlquote
+from urllib.parse import urlparse, urljoin, quote as urlquote
 from dataclasses import dataclass, field, InitVar
 from typing import Optional
 
@@ -266,7 +266,8 @@ def add_share_link(
         server_api: str,
         album: Album | str) -> ShareLink:
     uid = core._extract_uid(album)
-    if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
+    if uid is None:
+        raise TypeError('Must pass in UID as str or as attribute of object')
     endpoint = f'albums/{uid}/links'
     resp = core.request(
         session = session,
@@ -274,37 +275,67 @@ def add_share_link(
         method = 'POST')
     return ShareLink.fromjson(resp.json())
 
+def parse_share_link(
+        session: requests.Session,
+        server_api: str,
+        url: str,
+        album: Album | str) -> ShareLink:
+    path_parts = urlparse(url).path.split('/')
+    share_uid = core._extract_uid(album)
+    if share_uid is None:
+        raise TypeError('Must pass in UID as str or as attribute of object')
+    token = path_parts[1]
+    # We have to find the link UID
+    links = get_share_links(session, server_api, album)
+    for link in links:
+        if link.token == token: return link
+
 def update_share_link(
         session: requests.Session,
         server_api: str,
-        share_link: ShareLink,
-        link_props: ShareLinkProperties) -> ShareLink:
-    # share_link_uid = core._extract_uid(share_link)
-    # if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
-    # endpoint = (f'albums/{urlquote(share_link.share_uid)}/'
-    #             f'links/{urlquote(share_link.uid)}')
-    # resp = core.request(
-    #     session = session,
-    #     url = urljoin(server_api, endpoint),
-    #     method = 'PUT',
-    #     data = core.asjson(linkprops)
-    # )
-    # return ShareLink.fromjson(resp.json())
-    raise NotImplementedError('This has not been implemented yet.')
+        share_link: ShareLink | str,
+        link_props: ShareLinkProperties,
+        album: Optional[Album | str] = None) -> ShareLink:
+    '''Update share link with the given properties. Note that if you provide
+    share_link as the URL itself, you must also provide the Album that the link
+    is for.
+    '''
+    if isinstance(share_link, str) and album is None:
+        raise ValueError('Must pass in which album the link is for if '
+                         'supplying share_link as URL directly.')
+    # First we need to get the share link if it was passed as URL
+    if isinstance(share_link, str):
+        link = parse_share_link(session, server_api, share_link, album)
+    else: link = share_link
+    endpoint = (f'albums/{link.share_uid}/'
+                f'links/{link.uid}')
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'PUT',
+        data = link_props.json
+    )
 
 def delete_share_link(
         session: requests.Session,
         server_api: str,
-        share_link: ShareLink) -> None:
-    # endpoint = (f'albums/{urlquote(share_link.uid)}/'
-    #             f'links/{urlquote(share_link.share_uid)}')
-    # resp = core.request(
-    #     session = session,
-    #     url = urljoin(server_api, endpoint),
-    #     method = 'DELETE'
-    # )
-    # return ShareLink.fromjson(resp.json())
-    raise NotImplementedError('This has not been implemented yet.')    
+        share_link: ShareLink | str,
+        album: Optional[Album | str] = None) -> None:
+    if isinstance(share_link, str) and album is None:
+        raise ValueError('Must pass in which album the link is for if '
+                         'supplying share_link as URL directly.')
+    # First we need to get the share link if it was passed as URL
+    if isinstance(share_link, str):
+        link = parse_share_link(session, server_api, share_link, album)
+    else: link = share_link
+    endpoint = (f'albums/{link.share_uid}/'
+                f'links/{link.uid}')
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'DELETE'
+    )
+    return ShareLink.fromjson(resp.json())
 
 def get_cover_image(
         user: core.User,
