@@ -300,7 +300,10 @@ def like(
     :raises requests.HTTPError: If it runs into an HTTP error while sending the request
     :returns: None
     '''
-    endpoint = f'photos/{core._extract_uid(photo)}/like'
+    uid = core._extract_uid(photo)
+    if uid is None:
+        raise TypeError('Must pass in UID as str or as attribute of object')
+    endpoint = f'photos/{uid}/like'
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
@@ -318,5 +321,12 @@ def unlike(
     :raises requests.HTTPError: If it runs into an HTTP error while sending the request
     :returns: None
     '''
-    raise NotImplementedError('This has not yet been implemented.')
+    uid = core._extract_uid(photo)
+    if uid is None:
+        raise TypeError('Must pass in UID as str or as attribute of object')
+    endpoint = f'photos/{uid}/like'
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'DELETE')
     

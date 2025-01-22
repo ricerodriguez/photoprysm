@@ -126,7 +126,7 @@ def update(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'PUT',
-        data = core.asjson(properties))
+        data = properties.json)
     return Album.fromjson(resp.json())
 
 def delete(
@@ -174,7 +174,7 @@ def clone(
         session: requests.Session,
         server_api: str,
         album: Album | str,
-        albums_to_copy: list[Album | str]) -> None:
+        albums_to_copy: list[Album | str]) -> Album:
     '''
     Copies the photos from other albums to an existing album
 
@@ -186,7 +186,8 @@ def clone(
     '''
     # Validate user input
     uid = core._extract_uid(album)
-    if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
+    if uid is None:
+        raise TypeError('Must pass in UID as str or as attribute of object')
     uids_to_copy = core._extract_uids(albums_to_copy)
     if any([uid is None for uid in uids_to_copy]):
         raise TypeError('One of the albums to copy has neither a \'uid\' '
@@ -199,11 +200,13 @@ def clone(
         method = 'POST',
         data = selection
     )
+    assert resp.json()['code'] == 200
+    return Album.fromjson(resp.json()['album'])
 
 def like(
         session: requests.Session,
         server_api: str,
-        album: Album | str) -> Album:
+        album: Album | str) -> None:
     '''
     Sets the favorite flag for an album.
 
@@ -212,17 +215,17 @@ def like(
     :param str uid: Album UID
     '''
     uid = core._extract_uid(album)
-    if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
+    if uid is None:
+        raise TypeError('Must pass in UID as str or as attribute of object')
     endpoint = f'albums/{uid}/like'
-    resp = core.request(
+    core.request(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'POST')
-    return Album.fromjson(resp.json())
 
 def unlike(
         session: requests.Session,
-        server_api: str) -> Album:
+        server_api: str) -> None:
     '''
     Removes the favorite flag from an album.
 
@@ -233,11 +236,10 @@ def unlike(
     uid = core._extract_uid(album)
     if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
     endpoint = f'albums/{uid}/like'
-    resp = core.request(
+    core.request(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'DELETE')
-    return Album.fromjson(resp.json())
 
 def get_share_links(
         session: requests.Session,

@@ -7,85 +7,96 @@ from dataclasses import asdict
 
 from photoprysm import core
 from photoprysm import albums
-from .test_core import *
 
-# This is from the demo API docs
-__GET_ALBUMS_JSON = {
-    "UID": "artiskh2amkzizr6",
-    "ParentUID": "",
-    "Thumb": "bf2a691e21b3403fc93a0e4ce2f33307cace2faf",
-    "Slug": "berlin",
-    "Type": "album",
-    "Title": "Berlin",
-    "Location": "",
-    "Category": "",
-    "Caption": "",
-    "Description": "",
-    "Notes": "",
-    "Filter": "",
-    "Order": "oldest",
-    "Template": "",
-    "Path": "",
-    "State": "",
-    "Country": "zz",
-    "Year": 0,
-    "Month": 0,
-    "Day": 0,
-    "Favorite": True,
-    "Private": False,
-    "PhotoCount": 7,
-    "LinkCount": 0,
-    "CreatedAt": "2023-04-22T14:07:29Z",
-    "UpdatedAt": "2023-04-22T14:08:45.461421502Z",
-    "DeletedAt": "0001-01-01T00:00:00Z"
-}
+from .test_core import *
+from .mock_responses.loader import get_mock_response
 
 @responses.activate
-def test_create_albums(user, server_api, session):
+def test_create_album(mock, server_api, session):
+    title = mock['Title']
     responses.post(
         url = urljoin(server_api, 'albums'),
         status = 200,
-        json = __GET_ALBUMS_JSON)
-    album = albums.create(session, server_api, 'TEST ALBUM')
-    assert album.uid == __GET_ALBUMS_JSON['UID']
+        json = mock)
+    album = albums.create(session, server_api, title)
+    assert album.uid == mock['UID']
 
 def test_real_create_albums(user, server_api):
+    mock = get_mock_response('create_album')
+    title = mock['Title']
     with core.user_session(user, server_api) as session:
-        album = albums.create(session, server_api, 'TEST ALBUM')
+        album = albums.create(session, server_api, title)
     assert isinstance(album, albums.Album)
 
 @responses.activate
-def test_get_albums(user, server_api, session):
+def test_get_albums_q3(mock, server_api, session):
     responses.get(
-        url = urljoin(server_api, 'albums?count=1&q=1'),
+        url = urljoin(server_api, 'albums?count=3'),
         status = 200,
-        json = [__GET_ALBUMS_JSON]
+        json = mock
     )
-    albums_list = albums.get(session, server_api, query = 1)
-    assert isinstance(albums_list, list)
-    for k,v in {
-        'uid': __GET_ALBUMS_JSON['UID'],
-        'title': __GET_ALBUMS_JSON['Title'],
-        'description': __GET_ALBUMS_JSON['Description'],
-        'favorite': __GET_ALBUMS_JSON['Favorite'],
-        'private': __GET_ALBUMS_JSON['Private']}.items():
-        assert asdict(albums_list[0])[k] == v
+    albums_list = albums.get(session, server_api, count = 3)
+    assert len(albums_list) == 3
 
-# Make sure to use actual credentials in the user fixture with the actual URL
-# in the server_api fixture
+def test_properties():
+    properties = albums.AlbumProperties(title = 'Test Album')
+    assert properties.json == json.dumps({'Title': 'Test Album'})
+
+@responses.activate
+def test_update_album(mock, server_api, session):
+    uid = mock['UID']
+    new_title = mock['Title']
+    responses.put(
+        url = urljoin(server_api, f'albums/{uid}'),
+        status = 200,
+        json = mock)
+    properties = albums.AlbumProperties(title = new_title)
+    updated_album = albums.update(session, server_api, uid, properties)
+    assert updated_album.title == new_title
+
+@responses.activate
+def test_clone_album(mock, server_api, session):
+    uid = mock['album']['UID']
+    cloned_uid = mock['added'][0]['AlbumUID']
+    responses.post(
+        url = urljoin(server_api, f'albums/{uid}/clone'),
+        status = 200,
+        json = mock)
+    clone = albums.clone(session, server_api, uid, [cloned_uid])
+    assert True
+
+@responses.activate
+def test_like_album(mock, server_api, session):
+    responses.post(
+        url = urljoin(server_api, f'albums/example/like'),
+        status = 200,
+        json = mock)
+    assert albums.like(session, server_api, 'example') == None
+
 def test_real_get_albums(user, server_api):
     with core.user_session(user, server_api) as session:
         albums_list = albums.get(session, server_api, query = 'Test Album')
     assert albums_list[0].title == 'Test Album'
 
 @responses.activate
-def test_delete_album(user, server_api, session):
+def test_delete_album(mock, server_api, session):
+    uid = mock['UID']
     responses.delete(
-        url = urljoin(server_api, f'albums/{__GET_ALBUMS_JSON["UID"]}'),
+        url = urljoin(server_api, f'albums/{uid}'),
         status = 200,
-        json = __GET_ALBUMS_JSON)
-    album = albums.Album(uid = __GET_ALBUMS_JSON['UID'])
+        json = mock)
+    album = albums.Album(uid = uid)
     assert albums.delete(session, server_api, album) is None
+
+@responses.activate
+def test_add_album_link(mock, server_api, session):
+    uid = mock['UID']
+    responses.post(
+        url = urljoin(server_api, f'albums/{uid}/links'),
+        status = 200,
+        json = mock)
+    link = albums.add_share_link(session, server_api, uid)
+    assert json.loads(link.json) == mock
 
 # @responses.activate
 # def test_get_share_links(user, server_api, session):
