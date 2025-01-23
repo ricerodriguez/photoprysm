@@ -19,8 +19,6 @@ from .api import photos
 from .models.albums import *
 from .models.links import *
 from .models.photos import *
-from .models.labels import *
-from .models.config import *
 
 # Add aliases from the top
 from .api.albums import get as get_albums
