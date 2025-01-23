@@ -31,7 +31,7 @@ Features
 Quickstart
 ----------
 
-To start, you need a :class:`User` or :class:`Client` instance.
+To start, you need a `User` or `Client` instance.
 
 >>> import photoprysm
 >>> user = photoprysm.User('username', 'password')
