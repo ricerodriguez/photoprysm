@@ -29,18 +29,20 @@ def get(
         video: Optional[bool] = None) -> list[Photo]:
     '''Get list of Photos by query.
 
-    :param requests.Session session: Pre-configured `requests.Session`_ object to send the request with
-    :param str server_api: Base URL of the server API
-    :param str query: Query to search for
+    :param session: Pre-configured `requests.Session`_ object to send the request with
+    :param server_api: Base URL of the server API
     :param int count: (optional) Number of matches to return. Defaults to 1.
-    :param bool merged: (optional) If True, consecutive files with the same photo ID are merged into a single result with the Files property containing the related files.
     :param int quality: (optional) Minimum quality score. Defaults to 0 to disable limit. Must be within range of 1-7.
+    :param bool merged: (optional) If True, consecutive files with the same photo ID are merged into a single result with the Files property containing the related files.
+    :param str query: (optional) Query to search for. See documentation for valid `Photoprism Search Filters`_.
+    :param int offset: (optional) Search result offset
+    :param str order: (optional) Sort order. Choose from favorites, name, title, added, or edited.
+    :param bool public: (optional) Limit searches to those with public access.
     :param Album|str album: (optional) Album to search under. You can provide a handle to an Album instance or you can provide the UID as a string directly.
     :param os.PathLike path: (optional) Path to the photo
-    :param bool is_video: (optional) True if result should be of type video
+    :param bool video: (optional) True if result should be of type video
     :raises requests.HTTPError: If the request is poorly formed or the server is not accepting requests
     :returns: List of Photos that match from the query
-    :rtype: list[Photo]
     '''
     # Validate user input
     if quality is not None and quality not in range(0,7):
@@ -97,13 +99,13 @@ def get_by_file(
 def archive(
         session: requests.Session,
         server_api: str,
-        photo: Photo | str) -> None:
-    batch_archive(session, server_api, [photo])
+        *photos: Photo | str) -> None:
+    '''Archive one or more photos.
 
-def batch_archive(
-        session: requests.Session,
-        server_api: str,
-        photos: list[Photo | str]) -> None:
+    :param session: Pre-configured `requests.Session`_ object to send the request with
+    :param server_api: Base URL of the server API
+    :param photos: One or more Photo objects or UIDs to archive
+    '''
     # Validate user input
     uids = core._extract_uids(photos)
     if any([uid is None for uid in uids]):
@@ -118,13 +120,7 @@ def batch_archive(
 def restore(
         session: requests.Session,
         server_api: str,
-        photo: Photo | str) -> None:
-    batch_restore(session, server_api, [photo])
-
-def batch_restore(
-        session: requests.Session,
-        server_api: str,
-        photos: list[Photo | str]) -> None:
+        *photos: Photo | str) -> None:
     # Validate user input
     uids = core._extract_uids(photos)
     if any([uid is None for uid in uids]):
@@ -138,27 +134,42 @@ def batch_restore(
         method = 'POST',
         data = data)
 
-def delete(
+def clear_from_archive(
         session: requests.Session,
         server_api: str,
-        photo: Photo | str) -> None:
-    batch_archive(session, server_api, [photo])
-    batch_delete(session, server_api, [photo])
+        *photos: Photo | str) -> None:
+    '''Permanently delete one or more Photos from the archive.
 
-def batch_delete(
-        session: requests.Session,
-        server_api: str,
-        photos: list[Photo | str]) -> None:
+    :param session: Pre-configured `requests.Session`_ object to send the request with
+    :param server_api: Base URL of the server API
+    :param photos: One or more Photos to remove from the archive
+    '''
     # Validate user input
     uids = core._extract_uids(photos)
     if any([uid is None for uid in uids]):
         raise TypeError('One of the photos has neither a \'uid\' '
                         'attribute nor is it a str')
-    endpoint = 'batch/photos/delete'
     data = json.dumps({'photos': uids})
     resp = core.request(
         session = session,
-        url = urljoin(server_api, endpoint),
+        url = urljoin(server_api, 'batch/photos/delete'),
+        method = 'POST',
+        data = data)
+
+def delete(
+        session: requests.Session,
+        server_api: str,
+        *photos: Photo | str) -> None:
+    # Validate user input
+    uids = core._extract_uids(photos)
+    if any([uid is None for uid in uids]):
+        raise TypeError('One of the photos has neither a \'uid\' '
+                        'attribute nor is it a str')
+    batch_archive(session, server_api, uids)
+    data = json.dumps({'photos': uids})
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, 'batch/photos/delete'),
         method = 'POST',
         data = data)
 

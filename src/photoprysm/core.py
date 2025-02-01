@@ -15,8 +15,8 @@ class Client:
     '''
     Dataclass for holding authentication information for the application's Client credentials.
 
-    :param client_id: Client ID generated from `Photoprism CLI`_. See the note below.
-    :param client_secret: Client secret generated from `Photoprism CLI`_. See the note below.
+    :param str client_id: Client ID generated from `Photoprism CLI`_. See the note below.
+    :param str client_secret: Client secret generated from `Photoprism CLI`_. See the note below.
     '''
     client_id: InitVar[str]
     client_secret: InitVar[str]
@@ -28,7 +28,7 @@ class Client:
     def login(self, server_api: str) -> requests.Session:
         '''Login to the server as a Client
 
-        :param str server_api: Base URL to the server API
+        :param server_api: Base URL to the server API
         :raises `requests.HTTPError`_: If the credentials are invalid or the server is not accepting requests
         :returns: Pre-configured Session with the authentication token for this Client
         :rtype: `requests.Session`_

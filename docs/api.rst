@@ -96,7 +96,6 @@ found in the ``photoprysm.albums`` module.
 .. autofunction:: create
 .. autofunction:: update
 .. autofunction:: delete
-.. autofunction:: batch_delete
 .. autofunction:: clone
 .. autofunction:: like
 .. autofunction:: unlike
@@ -108,20 +107,24 @@ found in the ``photoprysm.albums`` module.
 ``photoprysm.photos``
 ---------------------
 .. module:: photoprysm.photos
-
-.. error:: These have not been implemented yet!
            
 All functions for interfacing with the photo API endpoints can be
 found in the ``photoprysm.photos`` module.
 
+.. autofunction:: archive
 .. autofunction:: get
 .. autofunction:: get_by_uid
+..
+  COMING SOON
+  -.. autofunction:: get_by_file
 .. autofunction:: update
 .. autofunction:: approve
 .. autofunction:: set_primary_file
 .. autofunction:: pop_file
 .. autofunction:: like
 .. autofunction:: unlike
+.. autofunction:: delete
+           
 
 .. Links
 .. _`Photoprism CLI`: https://docs.photoprism.app/getting-started/docker-compose/#command-line-interface
@@ -129,3 +132,4 @@ found in the ``photoprysm.photos`` module.
 .. _`requests.Session`: https://requests.readthedocs.io/en/latest/api/#requests.Session
 .. _`requests.Response`: https://requests.readthedocs.io/en/latest/api/#requests.Response
 .. _`requests.HTTPError`: https://requests.readthedocs.io/en/latest/api/#requests.HTTPError
+.. _`Photoprism Search Filters`: https://docs.photoprism.app/user-guide/search/filters/

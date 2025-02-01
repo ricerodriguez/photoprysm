@@ -32,6 +32,7 @@ def get(
     :param session: Session to make the request from
     :param server_api: String with the base URL for the API
     :param count: Maximum number of results
+    :param query: Query to send to the server.
     :param offset: Search result offset
     :param order: Sort order. Choose from favorites, name, title, added, or edited.
     :raises ValueError: If an invalid order is provided
@@ -132,30 +133,11 @@ def update(
 def delete(
         session: requests.Session,
         server_api: str,
-        album: Album | str) -> None:
+        *albums: Album | str) -> None:
     '''
     :param session: Session to make the request from
     :param server_api: String with the base URL for the API
-    :param Album album: Album to delete
-    '''
-    # Validate user input
-    uid = core._extract_uid(album)
-    if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
-    endpoint = f'albums/{uid}'
-    resp = core.request(
-        session = session,
-        url = urljoin(server_api, endpoint),
-        method = 'DELETE')
-
-def batch_delete(
-        session: requests.Session,
-        server_api: str,
-        albums: list[Album]) -> None:
-    '''
-    :param session: Session to make the request from
-    :param server_api: String with the base URL for the API
-    :param albums: List of albums to delete
-    :type albums: list[Album]
+    :param albums: One more Albums to delete
     '''
     uids = core._extract_uids(albums)
     if any([uid is None for uid in uids]):
