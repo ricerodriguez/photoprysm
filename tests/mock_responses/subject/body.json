@@ -1,0 +1,22 @@
+{
+  "About": "string",
+  "Alias": "string",
+  "Bio": "string",
+  "CreatedAt": "string",
+  "DeletedAt": "string",
+  "Excluded": true,
+  "Favorite": true,
+  "FileCount": 0,
+  "Hidden": true,
+  "Name": "string",
+  "Notes": "string",
+  "PhotoCount": 0,
+  "Private": true,
+  "Slug": "string",
+  "Src": "string",
+  "Thumb": "string",
+  "ThumbSrc": "string",
+  "Type": "string",
+  "UID": "string",
+  "UpdatedAt": "string"
+}
