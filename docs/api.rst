@@ -15,9 +15,6 @@ API
    >>>     resp = photoprysm.request(session, server_api, 'GET', 'session')
    >>>     assert resp.json()['id'] == session.headers['Authorization'].removeprefix('Bearer ')
 
-``photoprysm``
---------------
-
 To interact with the Photoprism server in any capacity, you need an
 access token. You can request this from the server either as a
 :class:`User` or a :class:`Client`. To create either of these objects,
@@ -66,6 +63,12 @@ you will need to pass the base URL to the API. You can either use the
 
 .. autofunction:: get_api_url
 .. autofunction:: request
+
+General
+-------
+
+.. autofunction:: start_import
+.. autofunction:: start_index
 
 Albums
 ------
@@ -161,3 +164,6 @@ Functions
 .. _`Authorization Scopes`: https://docs.photoprism.app/developer-guide/api/auth/#authorization-scopes
 .. _`latest Photoprism release`: https://docs.photoprism.app/release-notes/#september-15-2024
 .. _`Link Sharing`: https://docs.photoprism.app/user-guide/share/
+.. _`Indexing Your Library`: https://docs.photoprism.app/user-guide/library/
+.. _`Photoprism Volumes`: https://docs.photoprism.app/getting-started/docker-compose/#volumes
+.. _`Importing Files`: https://docs.photoprism.app/user-guide/library/#importing-files

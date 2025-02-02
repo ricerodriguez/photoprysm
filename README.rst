@@ -1,6 +1,6 @@
-========================
-Photoprism Python Client
-========================
+==========
+Photoprysm
+==========
 
 
 .. image:: https://img.shields.io/pypi/v/photoprysm.svg
@@ -9,8 +9,6 @@ Photoprism Python Client
 .. image:: https://readthedocs.org/projects/photoprysm/badge/?version=latest
         :target: https://photoprysm.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
-
-
 
 
 A Python client for interacting the the Photoprism REST API.

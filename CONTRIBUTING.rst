@@ -38,9 +38,9 @@ and "help wanted" is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-Photoprism Python Client could always use more documentation, whether as part of the
-official Photoprism Python Client docs, in docstrings, or even on the web in blog posts,
-articles, and such.
+Photoprysm could always use more documentation, whether as part of the
+official Photoprysm docs, in docstrings, or even on the web in blog
+posts, articles, and such.
 
 Submit Feedback
 ~~~~~~~~~~~~~~~

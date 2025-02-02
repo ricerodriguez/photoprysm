@@ -1,8 +1,8 @@
-Welcome to Photoprism Python Client's documentation!
-====================================================
+Welcome to Photoprysm's documentation!
+======================================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 3
    :caption: Contents:
 
    readme

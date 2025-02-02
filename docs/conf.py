@@ -46,7 +46,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Photoprism Python Client'
+project = 'Photoprysm'
 copyright = "2025, Rice Rodriguez"
 author = "Rice Rodriguez"
 
@@ -128,7 +128,7 @@ latex_elements = {
 # [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'photoprysm.tex',
-     'Photoprism Python Client Documentation',
+     'Photoprysm Documentation',
      'Rice Rodriguez', 'manual'),
 ]
 
@@ -139,7 +139,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     (master_doc, 'photoprysm',
-     'Photoprism Python Client Documentation',
+     'Photoprysm Documentation',
      [author], 1)
 ]
 
@@ -151,7 +151,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'photoprysm',
-     'Photoprism Python Client Documentation',
+     'Photoprysm Documentation',
      author,
      'photoprysm',
      'One line description of project.',

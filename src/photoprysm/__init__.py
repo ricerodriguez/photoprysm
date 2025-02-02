@@ -1,4 +1,4 @@
-"""Top-level package for Photoprism Python Client."""
+"""Top-level package for Photoprysm."""
 __author__ = """Rice Rodriguez"""
 __email__ = 'victoriarice@protonmail.com'
 __version__ = '0.0.1'
@@ -10,6 +10,8 @@ from .core import user_session
 from .core import client_session
 from .core import get_api_url
 from .core import request
+from .core import start_index
+from .core import start_import
 
 # Make the API accessible from the top
 from .api import albums

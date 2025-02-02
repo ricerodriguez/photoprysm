@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use Photoprism Python Client in a project::
+To use Photoprysm in a project::
 
     import photoprysm

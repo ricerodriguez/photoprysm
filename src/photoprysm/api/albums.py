@@ -90,10 +90,10 @@ def get_by_uid(
     '''
     Gets the Album handle from the provided UID.
 
-    :param client: Client to make the request from
+    :param session: Session to make the request from
+    :param server_api: String with the base URL for the API
     :param uid: UID of the album to get
     :returns: Album with matching UID
-    :rtype: Album
     '''
     endpoint = f'albums/{urlquote(uid)}'
     resp = core.request(

@@ -171,7 +171,11 @@ def start_import(
         path: str,
         move: Optional[bool] = None,
         *albums: Album | str) -> None:
-    '''
+    '''Start the import process. See `Importing Files`_ from the Photoprism documentation for more information.
+
+    :param session: Session to make the request from
+    :param server_api: String with the base URL for the API
+    :param path: Path where files are imported from. Set this to whatever you set it to in your Photoprism instance's Docker Compose configuration. See `Photoprism Volumes`_ for more information.
     '''
     data = {
         'albums': _extract_uids(albums),
@@ -190,7 +194,11 @@ def start_index(
         path: str,
         cleanup: Optional[bool] = None,
         rescan: Optional[bool] = None) -> None:
-    '''
+    '''Start the index process. See `Indexing Your Library`_ from the Photoprism documentation for more information.
+
+    :param session: Session to make the request from
+    :param server_api: String with the base URL for the API
+    :param path: Path where originals are kept. Set this to whatever you set it to in your Photoprism instance's Docker Compose configuration. See `Photoprism Volumes`_ for more information.
     '''
     data = {
         "cleanup": True if cleanup is None else cleanup,

@@ -8,13 +8,13 @@ Installation
 Stable release
 --------------
 
-To install Photoprism Python Client, run this command in your terminal:
+To install Photoprysm, run this command in your terminal:
 
 .. code-block:: console
 
     $ pip install photoprysm
 
-This is the preferred method to install Photoprism Python Client, as it will always install the most recent stable release.
+This is the preferred method to install Photoprysm, as it will always install the most recent stable release.
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -26,7 +26,7 @@ you through the process.
 From sources
 ------------
 
-The sources for Photoprism Python Client can be downloaded from the `Github repo`_.
+The sources for Photoprysm can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 
@@ -44,7 +44,7 @@ Once you have a copy of the source, you can install it with:
 
 .. code-block:: console
 
-    $ python setup.py install
+    $ pip install .
 
 
 .. _Github repo: https://github.com/ricerodriguez/photoprysm
