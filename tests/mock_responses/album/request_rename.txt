@@ -1,0 +1,7 @@
+# --- Request ---
+url = "https://demo.photoprism.app/api/v1/albums/asr0opdsa7dtz2p3"
+request = "PUT"
+oauth2-bearer = "234200000000000000000000000000000000000000000000"
+dump-header = "headers.txt"
+output = "body.json"
+data = {"Title":"NEW TITLE"}

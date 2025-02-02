@@ -1,0 +1,13 @@
+HTTP/2 200 
+access-control-allow-origin: *
+cache-control: no-store
+content-security-policy: frame-ancestors 'none'; frame-src *; default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: wss: photoprism.app *.photoprism.app *.photoprism.xyz *.photoprism.pro *.stripe.com *.maptiler.com; img-src * data: blob:; media-src * data: blob:
+content-type: application/json; charset=utf-8
+cross-origin-opener-policy: same-origin
+date: Sat, 01 Feb 2025 18:25:27 GMT
+referrer-policy: same-origin
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+vary: Accept-Encoding
+x-frame-options: DENY
+x-xss-protection: 1; mode=block
+

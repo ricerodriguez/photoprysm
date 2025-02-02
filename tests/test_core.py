@@ -3,7 +3,8 @@ import pytest
 import responses
 from urllib.parse import urljoin
 from photoprysm import core
-from .mock_responses.loader import get_mock_response
+from pathlib import Path
+# from .mock_responses.loader import get_mock_response
 
 @pytest.fixture
 def server_api():
@@ -80,7 +81,7 @@ def session(user, server_api):
         with core.user_session(user, server_api) as session:
             yield session
 
-@pytest.fixture
-def mock(request):
-    name = request.node.name.removeprefix('test_')
-    return get_mock_response(name)
+# @pytest.fixture
+# def mock(request):
+#     name = request.node.name.removeprefix('test_')
+#     return get_mock_response(name)

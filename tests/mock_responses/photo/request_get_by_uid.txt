@@ -1,0 +1,6 @@
+# --- Request ---
+url = "https://demo.photoprism.app/api/v1/photos/psr0ncb7xnefh3s4"
+request = "GET"
+oauth2-bearer = "234200000000000000000000000000000000000000000000"
+dump-header = "headers.txt"
+output = "body.json"
