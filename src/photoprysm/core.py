@@ -5,6 +5,7 @@ import requests
 from typing import Callable, Optional, TypeVar
 from urllib.parse import urljoin
 from dataclasses import dataclass, InitVar, field, asdict
+from .models.albums import Album
 import contextlib
 
 logger = logging.getLogger(__name__)
@@ -163,6 +164,44 @@ def get_api_url(
     if not (u_scheme in ['http', 'https']):
         raise TypeError('Scheme must be set to either \'http\' or \'https\'.')
     return f'{u_scheme}://{u_netloc}/api/v1/'
+
+def start_import(
+        session: requests.Session,
+        server_api: str,
+        path: str,
+        move: Optional[bool] = None,
+        *albums: Album | str) -> None:
+    '''
+    '''
+    data = {
+        'albums': _extract_uids(albums),
+        'move': False if move is None else move,
+        'path': path
+    }
+    resp = request(
+        session = session,
+        url = urljoin(server_api, 'import'),
+        method = 'POST',
+        data = json.dumps(data))
+
+def start_index(
+        session: requests.Session,
+        server_api: str,
+        path: str,
+        cleanup: Optional[bool] = None,
+        rescan: Optional[bool] = None) -> None:
+    '''
+    '''
+    data = {
+        "cleanup": True if cleanup is None else cleanup,
+        "path": path,
+        "rescan": True if rescan is None else rescan
+    }
+    resp = request(
+        session = session,
+        url = urljoin(server_api, 'index'),
+        method = 'POST',
+        data = json.dumps(data))
 
 def request(
         session: requests.Session,

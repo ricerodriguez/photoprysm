@@ -81,7 +81,18 @@ def session(user, server_api):
         with core.user_session(user, server_api) as session:
             yield session
 
-# @pytest.fixture
-# def mock(request):
-#     name = request.node.name.removeprefix('test_')
-#     return get_mock_response(name)
+@pytest.mark.parametrize('count', list(range(0,3)))
+@responses.activate
+def test_import(mock_i18n_response, mock_album, server_api, session, count):
+    albums_list = [mock_album['json']['UID']] * count
+    path = '/path/to/import'
+    req_kwargs = {
+        'albums': albums_list,
+        'move': False,
+        'path': path
+    }
+    responses.post(
+        url = urljoin(server_api, 'import'),
+        match=[responses.matchers.json_params_matcher(req_kwargs)],
+        **mock_i18n_response)
+    core.start_import(session, server_api, path, False, *albums_list)
