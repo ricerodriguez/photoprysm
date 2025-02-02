@@ -24,10 +24,6 @@ access token. You can request this from the server either as a
 you will need to pass the base URL to the API. You can either use the
 :func:`get_api_url` function or you can type the URL manually.
 
-.. note:: Some API endpoints are restricted to :class:`User` sessions
-          only. This includes all endpoints that need scope access to
-          albums or photos.
-
 .. autoclass:: User
    :members:
 
@@ -47,6 +43,17 @@ you will need to pass the base URL to the API. You can either use the
    Photoprism's `Client Credentials`_ page for more
    information.
           
+.. warning:: Despite the existence of the "albums" and "photos" scopes
+             listed in the Photoprism documentation on Client
+             `Authorization Scopes`_, interfacing with albums or
+             photos requires :class:`User` access. It will not work
+             using a Client session, even if you have not limited the
+             Client's scope (i.e. setting ``--scope *`` when you
+             generated the `Client Credentials`_). **Since nearly all
+             functionality of this package relies on access to these
+             scopes, functionality through Client sessions has been
+             minimally tested and may result in unexpected issues.**
+
 .. autofunction:: user_session
 
 >>> with user_session(user, server_api) as session:
@@ -62,11 +69,6 @@ you will need to pass the base URL to the API. You can either use the
 
 Albums
 ------
-.. note:: Despite the existence of an "albums" scope listed in the
-          Photoprism documentation on Client `Authorization Scopes`_,
-          interfacing with albums requires :class:`User` access. **It
-          will not work using a Client session, even if you have given
-          the Client the "albums" scope.**
 
 Models
 ^^^^^^

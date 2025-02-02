@@ -50,16 +50,16 @@ class ModelBase:
         return json.dumps(d)
         
     @classmethod
-    def fromjson(cls: Self, json: dict[str,Any]):
+    def fromjson(cls: Self, djson: dict[str,Any]):
         '''Alternative constructor. Builds the instance from the JSON response.'''
         # Required attribute names are passed in as args
         required_attrs = {}
         for arg in cls.__required_attrs__:
-            if json.get(camel(arg)) is None:
+            if djson.get(camel(arg)) is None:
                 raise TypeError(f'JSON response missing required arg \'{arg}\'.')
-            else: required_attrs[arg] = json.get(camel(arg))
+            else: required_attrs[arg] = djson.get(camel(arg))
         inst = cls(**required_attrs)
         # Now we set the rest of the attributes
         for attr in fields(cls):
-            setattr(inst, attr.name, json.get(camel(attr.name)))
+            setattr(inst, attr.name, djson.get(camel(attr.name)))
         return inst
