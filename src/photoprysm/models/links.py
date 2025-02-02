@@ -15,17 +15,17 @@ class ShareLink(ModelBase,
                     'uid']):
     '''Data class for holding information about a share link
 
-    :param str comment: Comment that was added when the share link was created
-    :param str|datetime.datetime created_at: Time when the link was created
-    :param str created_by:
+    :param token: Token of the share link, used to construct the URL
+    :param share_uid: UID of the album the link points to
+    :param slug: URL slug of the album the share link is for
+    :param uid: UID of the share link itself
+    :param str comment: (optional) Comment that was added when the share link was created
+    :param str created_at: (optional) Time when the link was created
+    :param str created_by: (optional) UID of the User who created this ShareLink
     :param int expires: (optional) Seconds until the link expires
     :param int max_views: (optional) Maximum number of views until the link expires
-    :param str|datetime.datetime modified_at: Time when the link was last modified
-    :param int perm: ???
-    :param str share_uid: UID of the album the link points to
-    :param str slug: URL slug of the album the share link is for
-    :param str token: Token of the share link, used to construct the URL
-    :param str uid: UID of the share link itself
+    :param str modified_at: (optional) Time when the link was last modified
+    :param int perm: (optional) I literally do not know what this is.
     :param bool verify_password: (optional) Set to True to require user to verify password when they visit the share link
     :param int views: (optional) Number of views the share link has so far
     '''
@@ -51,9 +51,16 @@ class ShareLink(ModelBase,
             # TODO: Convert to datetime.datetime
             pass
 
-    def get_url(self, host: str, https: bool = True) -> str:
-        scheme = 'https' if https else 'http'
-        base = f'{scheme}://{host}/s/'
+    def get_url(self, host: Optional[str] = None, https: Optional[bool] = None) -> str:
+        '''
+        Construct the URL of the ShareLink.
+
+        :param str host: (optional) Hostname where the Photoprism server is. Defaults to 'localhost'.
+        :param bool https: (optional) Set to True to use https. Defaults to False.
+        '''
+        u_host = host or 'localhost'
+        scheme = 'https' if https == True else 'http'
+        base = f'{scheme}://{u_host}/s/'
         return urljoin(urljoin(base, self.token), self.slug)
 
 @dataclass
