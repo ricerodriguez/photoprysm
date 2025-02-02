@@ -245,21 +245,7 @@ def set_primary_file(
 def set_private(
         session: requests.Session,
         server_api: str,
-        photo: Photo | str) -> None:
-    '''Set photo as private.
-
-    :param requests.Session session: Pre-configured `requests.Session`_ object to send the request with
-    :param str server_api: Base URL of the server API
-    :param Photo photo: Photo to set as private
-    :raises requests.HTTPError: If it runs into an HTTP error while sending the request
-    :returns: None
-    '''
-    batch_set_private(session, server_api, [photo])
-
-def batch_set_private(
-        session: requests.Session,
-        server_api: str,
-        photos: list[Photo | str]) -> None:
+        *photos: Photo | str) -> None:
     '''Set multiple photos as private.
 
     :param requests.Session session: Pre-configured `requests.Session`_ object to send the request with

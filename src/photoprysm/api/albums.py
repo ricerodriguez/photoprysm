@@ -13,7 +13,6 @@ from dataclasses import dataclass, field, InitVar
 from typing import Optional
 
 logger = logging.getLogger(__name__)
-
 ValidSortOrderTypes = enum.StrEnum(
     'ValidSortOrderTypes',
     'FAVORITES,NAME,TITLE,ADDED,EDITED')
@@ -156,15 +155,14 @@ def clone(
         session: requests.Session,
         server_api: str,
         album: Album | str,
-        albums_to_copy: list[Album | str]) -> Album:
+        *albums_to_copy: Album | str) -> Album:
     '''
     Copies the photos from other albums to an existing album
 
-    :param requests.Session session: Session to make the request from
-    :param str server_api: String with the base URL for the API
-    :param Album album: Album to which the pictures are to be added
-    :param albums_to_copy: List of albums containing the photos that will be copied
-    :type albums_to_copy: list[Album]
+    :param session: Session to make the request from
+    :param server_api: String with the base URL for the API
+    :param album: Album to which the pictures are to be added
+    :param albums_to_copy: One or more Albums containing the photos that will be copied
     '''
     # Validate user input
     uid = core._extract_uid(album)

@@ -60,21 +60,66 @@ you will need to pass the base URL to the API. You can either use the
 .. autofunction:: get_api_url
 .. autofunction:: request
 
-Models
+Albums
 ------
+.. note:: Despite the existence of an "albums" scope listed in the
+          Photoprism documentation on Client `Authorization Scopes`_,
+          interfacing with albums requires :class:`User` access. **It
+          will not work using a Client session, even if you have given
+          the Client the "albums" scope.**
 
-Several dataclasses in this package hold information about various
-models to be used for interfacing with. These classes do not have many
-(if any) methods and are purely for holding data in a convenient way.
+Models
+^^^^^^
+
+These dataclasses hold information about various models to be used for
+interfacing with. They do not have many (if any) methods and are
+purely for holding data in a convenient way.
 
 .. autoclass:: Album
    :members:
 .. autoclass:: AlbumProperties
    :members:
+
+Functions
+^^^^^^^^^
+.. autofunction:: get_albums
+.. autofunction:: get_album_by_uid
+.. autofunction:: create_album
+.. autofunction:: delete_album
+.. autofunction:: like_album
+.. autofunction:: unlike_album
+.. autofunction:: update_album
+.. autofunction:: clone_album
+
+Share Links
+~~~~~~~~~~~
+
+As of writing, the `Link Sharing`_ feature in the `latest Photoprism
+release`_ is limited to sharing albums. Currently, **share links
+cannot be generated for anything except albums.**
+
+Models
+""""""
+
 .. autoclass:: ShareLink
    :members:
 .. autoclass:: ShareLinkProperties
    :members:
+
+Functions
+"""""""""
+
+.. autofunction:: get_album_share_links
+.. autofunction:: add_album_share_link
+.. autofunction:: parse_album_share_link
+.. autofunction:: update_album_share_link   
+
+Photos
+------
+
+Models
+^^^^^^
+
 .. autoclass:: Photo
    :members:
 .. autoclass:: PhotoFile
@@ -84,47 +129,25 @@ models to be used for interfacing with. These classes do not have many
 .. autoclass:: PhotoProperties
    :members:
 
-``photoprysm.albums``
----------------------
-.. module:: photoprysm.albums
+Functions
+^^^^^^^^^
 
-All functions for interfacing with the album API endpoints can be
-found in the ``photoprysm.albums`` module.
-
-.. autofunction:: get
-.. autofunction:: get_by_uid                  
-.. autofunction:: create
-.. autofunction:: update
-.. autofunction:: delete
-.. autofunction:: clone
-.. autofunction:: like
-.. autofunction:: unlike
-.. autofunction:: get_share_links
-.. autofunction:: add_share_link
-.. autofunction:: update_share_link
-.. autofunction:: delete_share_link
-   
-``photoprysm.photos``
----------------------
-.. module:: photoprysm.photos
-           
-All functions for interfacing with the photo API endpoints can be
-found in the ``photoprysm.photos`` module.
-
-.. autofunction:: archive
-.. autofunction:: get
-.. autofunction:: get_by_uid
+.. autofunction:: archive_photo
+.. autofunction:: get_photos
+.. autofunction:: get_photo_by_uid
 ..
   COMING SOON
   -.. autofunction:: get_by_file
-.. autofunction:: update
-.. autofunction:: approve
-.. autofunction:: set_primary_file
-.. autofunction:: pop_file
-.. autofunction:: like
-.. autofunction:: unlike
-.. autofunction:: delete
-           
+.. autofunction:: update_photo
+.. autofunction:: approve_photo
+.. autofunction:: set_photo_primary_file
+.. autofunction:: pop_photo_file
+.. autofunction:: like_photo
+.. autofunction:: unlike_photo
+.. autofunction:: delete_photo
+.. autofunction:: restore_photo
+.. autofunction:: clear_photo_from_archive           
+.. autofunction:: set_photo_as_private
 
 .. Links
 .. _`Photoprism CLI`: https://docs.photoprism.app/getting-started/docker-compose/#command-line-interface
@@ -133,3 +156,6 @@ found in the ``photoprysm.photos`` module.
 .. _`requests.Response`: https://requests.readthedocs.io/en/latest/api/#requests.Response
 .. _`requests.HTTPError`: https://requests.readthedocs.io/en/latest/api/#requests.HTTPError
 .. _`Photoprism Search Filters`: https://docs.photoprism.app/user-guide/search/filters/
+.. _`Authorization Scopes`: https://docs.photoprism.app/developer-guide/api/auth/#authorization-scopes
+.. _`latest Photoprism release`: https://docs.photoprism.app/release-notes/#september-15-2024
+.. _`Link Sharing`: https://docs.photoprism.app/user-guide/share/

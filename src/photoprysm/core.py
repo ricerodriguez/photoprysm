@@ -1,13 +1,15 @@
 import re
 import json
-import requests
 import logging
-from typing import Optional, TypeVar
+import requests
+from typing import Callable, Optional, TypeVar
 from urllib.parse import urljoin
 from dataclasses import dataclass, InitVar, field, asdict
 import contextlib
 
 logger = logging.getLogger(__name__)
+
+# TypeVar for generic Model
 M = TypeVar('M')
 
 @dataclass
@@ -198,5 +200,4 @@ def _extract_uid[M](obj: M | str) -> str:
 
 def _extract_uids[M](collection: list[M], /) -> list[str]:
     return [_extract_uid(obj) for obj in collection]
-
     
