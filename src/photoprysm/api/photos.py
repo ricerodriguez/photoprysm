@@ -166,7 +166,7 @@ def delete(
     if any([uid is None for uid in uids]):
         raise TypeError('One of the photos has neither a \'uid\' '
                         'attribute nor is it a str')
-    batch_archive(session, server_api, uids)
+    archive(session, server_api, *uids)
     data = json.dumps({'photos': uids})
     resp = core.request(
         session = session,

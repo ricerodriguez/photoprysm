@@ -33,34 +33,39 @@ def test_archive(mock_approve_photo, server_api, session):
         url = urljoin(server_api, 'batch/photos/archive'),
         **mock_approve_photo)
     photos.archive(session, server_api, photo)
-# @responses.activate
-# def test_get_photos_count1_quality0(mock, server_api, session):
-#     responses.get(
-#         url = urljoin(server_api, 'photos?count=1&quality=0'),
-#         status = 200,
-#         json = mock
-#     )
-#     photos_list = photos.get(session, server_api, count = 1)
-#     assert isinstance(photos_list, list)
 
-# @responses.activate
-# def test_get_photo_by_uid(mock, server_api, session):
-#     uid = mock['UID']
-#     responses.get(
-#         url = urljoin(server_api, f'photos/{uid}'),
-#         status = 200,
-#         json = mock
-#     )
-#     photo = photos.get_by_uid(session, server_api, uid)
-#     assert photo.uid == uid
+@pytest.mark.parametrize(
+    'count',
+    list(range(1,5)))
+@responses.activate
+def test_restore(mock_i18n_response, mock_photo, server_api, session, count):
+    uids = [mock_photo['json']['UID']] * count
+    responses.post(
+        url = urljoin(server_api, 'batch/photos/restore'),
+        **mock_i18n_response)
+    photos.restore(session, server_api, *uids)
 
-# @responses.activate
-# def test_approve_photo(mock, server_api, session):
-#     photo_uid = mock['photo']['UID']
-#     responses.post(
-#         url = urljoin(server_api, f'photos/{photo_uid}/approve'),
-#         status = 200,
-#         json = mock
-#     )
-#     photo = photoprysm.Photo(uid = photo_uid)
-#     photos.approve(session, server_api, photo)
+@pytest.mark.parametrize(
+    'count',
+    list(range(1,5)))
+@responses.activate
+def test_clear_from_archive(mock_i18n_response, mock_photo, server_api, session, count):
+    uids = [mock_photo['json']['UID']] * count
+    responses.post(
+        url = urljoin(server_api, 'batch/photos/delete'),
+        **mock_i18n_response)
+    photos.clear_from_archive(session, server_api, *uids)
+
+@pytest.mark.parametrize(
+    'count',
+    list(range(1,5)))
+@responses.activate
+def test_delete(mock_i18n_response, mock_photo, server_api, session, count):
+    uids = [mock_photo['json']['UID']] * count
+    responses.post(
+        url = urljoin(server_api, 'batch/photos/archive'),
+        **mock_i18n_response)
+    responses.post(
+        url = urljoin(server_api, 'batch/photos/delete'),
+        **mock_i18n_response)
+    photos.delete(session, server_api, *uids)
