@@ -20,7 +20,7 @@ sphinx:
 python:
    install:
     - path: .
-    - "sphinx_autodoc_typehints"
+    - requirements: docs/requirements.txt
 
         
 
