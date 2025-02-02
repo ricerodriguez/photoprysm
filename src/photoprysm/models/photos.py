@@ -5,6 +5,8 @@ from typing import Optional
 @dataclass
 class PhotoFile(ModelBase, required = ['uid', 'photo_uid']):
     '''Dataclass for holding data about a file.
+    :param uid: UID of the PhotoFile
+    :param photo_uid: UID of the Photo this PhotoFile is associated with
     '''
     uid: str
     photo_uid: str
@@ -13,9 +15,7 @@ class PhotoFile(ModelBase, required = ['uid', 'photo_uid']):
 class Photo(ModelBase, required = ['uid']):
     '''Dataclass for holding data about a photo.
 
-    :param str uid:
-    :param json: (optional)
-    :type json: dict[str,str]
+    :param uid:
     '''
     uid: str
     path: Optional[str] = None
