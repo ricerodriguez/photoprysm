@@ -69,3 +69,14 @@ def test_delete(mock_i18n_response, mock_photo, server_api, session, count):
         url = urljoin(server_api, 'batch/photos/delete'),
         **mock_i18n_response)
     photos.delete(session, server_api, *uids)
+
+@responses.activate
+def test_update(mock_photo, server_api, session):
+    uid = mock_photo['json']['UID']
+    responses.put(
+        url = urljoin(server_api, f'photos/{uid}'),
+        **mock_photo)
+    props = photos.PhotoProperties(title = 'TEST')
+    photo = photos.update(session, server_api, uid, props)
+    assert photo.uid == uid
+    

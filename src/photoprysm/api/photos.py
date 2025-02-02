@@ -66,7 +66,7 @@ def get(
         method = 'GET',
         params = params)
     rv = []
-    for raw_photo in resp.json():
+    for raw_photo in resp.json().values():
         rv.append(Photo.fromjson(raw_photo))
     return rv
 
