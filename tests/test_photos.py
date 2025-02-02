@@ -19,6 +19,20 @@ def test_get_by_uid(mock_photo, server_api, session):
     photo = photos.get_by_uid(session, server_api, uid)
     assert photo.uid == uid
     
+@pytest.fixture
+def mock_approve_photo(mock_photo):
+    rv = {}
+    rv['status'] = mock_photo['status']
+    rv['json'] = {'photo': mock_photo['json']}
+    return rv
+
+@responses.activate
+def test_archive(mock_approve_photo, server_api, session):
+    photo = mock_approve_photo['json']['photo']['UID']
+    responses.post(
+        url = urljoin(server_api, 'batch/photos/archive'),
+        **mock_approve_photo)
+    photos.archive(session, server_api, photo)
 # @responses.activate
 # def test_get_photos_count1_quality0(mock, server_api, session):
 #     responses.get(
