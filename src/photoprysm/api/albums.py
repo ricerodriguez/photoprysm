@@ -54,7 +54,7 @@ def get(
         method = 'GET',
         params = params)
     rv = []
-    for raw_album in resp.json():
+    for raw_album in resp.json().values():
         rv.append(Album.fromjson(raw_album))
     return rv
             
@@ -147,7 +147,7 @@ def delete(
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
-        method = 'DELETE',
+        method = 'POST',
         data = selection
     )
 
@@ -230,6 +230,8 @@ def get_share_links(
 
     :param session: Session to make the request from
     :param server_api: String with the base URL for the API
+    :param album: Album to get the share links for
+    :returns: List of ShareLink objects for each share link generated for this Album. Note that if no share links have been generated, this will return an empty list.
     '''
     uid = core._extract_uid(album)
     if uid is None: raise TypeError('Must pass in UID as str or as attribute of object')
@@ -247,6 +249,13 @@ def add_share_link(
         session: requests.Session,
         server_api: str,
         album: Album | str) -> ShareLink:
+    '''Add share link to Album
+
+    :param session: Session to make the request from
+    :param server_api: String with the base URL for the API
+    :param album: Album to generate the share link for
+    :returns: ShareLink with info about the link that was just generated
+    '''
     uid = core._extract_uid(album)
     if uid is None:
         raise TypeError('Must pass in UID as str or as attribute of object')
