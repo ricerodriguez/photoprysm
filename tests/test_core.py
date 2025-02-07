@@ -96,3 +96,23 @@ def test_import(mock_i18n_response, mock_album, server_api, session, count):
         match=[responses.matchers.json_params_matcher(req_kwargs)],
         **mock_i18n_response)
     core.start_import(session, server_api, path, False, *albums_list)
+
+@pytest.mark.parametrize(
+    ('path', 'cleanup', 'rescan'),
+    [('', False, None),
+     (None, None, None),
+     ('path/to/whatever', True, False)]
+)
+@responses.activate
+def test_index(mock_i18n_response, server_api, session, path, cleanup, rescan):
+    path = '/path/to/import'
+    req_kwargs = {
+        'path': path,
+        'cleanup': True if cleanup is None else cleanup,
+        'rescan': True if rescan is None else rescan,
+    }
+    responses.post(
+        url = urljoin(server_api, 'index'),
+        match=[responses.matchers.json_params_matcher(req_kwargs)],
+        **mock_i18n_response)
+    core.start_index(session, server_api, path, cleanup, rescan)

@@ -168,20 +168,22 @@ def get_api_url(
 def start_import(
         session: requests.Session,
         server_api: str,
-        path: str,
+        path: Optional[str] = None,
         move: Optional[bool] = None,
         *albums: Album | str) -> None:
     '''Start the import process. See `Importing Files`_ from the Photoprism documentation for more information.
 
     :param session: Session to make the request from
     :param server_api: String with the base URL for the API
-    :param path: Path where files are imported from. Set this to whatever you set it to in your Photoprism instance's Docker Compose configuration. See `Photoprism Volumes`_ for more information.
+    :param str path: (optional) Path relative to the import path that you are importing files from. Leave blank to import everything in /photoprism/import volume. See `Photoprism Volumes`_ for more information.
+    :param bool move: (optional) Set to True to move files out of the /photoprism/import volume upon import. See more information `here <https://docs.photoprism.app/user-guide/library/import/#when-should-move-files-be-selected>`_.
     '''
     data = {
         'albums': _extract_uids(albums),
         'move': False if move is None else move,
-        'path': path
+        'path': path or ''
     }
+
     resp = request(
         session = session,
         url = urljoin(server_api, 'import'),
@@ -191,18 +193,20 @@ def start_import(
 def start_index(
         session: requests.Session,
         server_api: str,
-        path: str,
+        path: Optional[str] = None,
         cleanup: Optional[bool] = None,
         rescan: Optional[bool] = None) -> None:
     '''Start the index process. See `Indexing Your Library`_ from the Photoprism documentation for more information.
 
     :param session: Session to make the request from
     :param server_api: String with the base URL for the API
-    :param path: Path where originals are kept. Set this to whatever you set it to in your Photoprism instance's Docker Compose configuration. See `Photoprism Volumes`_ for more information.
+    :param str path: (optional) Path relative to the originals path that you want to index. Leave blank to index everything in /photoprism/originals volume
+    :param bool cleanup: (optional) Set to cleanup after the index process has completed. Defaults to True.
+    :param bool rescan: (optional) Set to rescan for more files after the index process has completed. Defaults to True.
     '''
     data = {
         "cleanup": True if cleanup is None else cleanup,
-        "path": path,
+        "path": path or '',
         "rescan": True if rescan is None else rescan
     }
     resp = request(
@@ -228,7 +232,6 @@ def request(
     :param params: Dictionary, list of tuples or bytes to send in the query string for the Request.
     :param data: Data to send with the request
     :returns: Response from the server after sending the request
-    :rtype: `requests.Response`_
     '''
     resp = session.request(
         method = method,

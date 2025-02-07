@@ -3,24 +3,6 @@ API
 ===
 .. module:: photoprysm
 
-..
-   You can either use the functions to interact with the API endpoints, such as:
-
-   >>> with user_session(user, server_api) as session:
-   >>>     album = photoprysm.albums.get_by_uid(session, server_api, 'example_uid')
-
-   Or you can use the request function to manually put in the endpoints.
-
-   >>> with user_session(user, server_api) as session:
-   >>>     resp = photoprysm.request(session, server_api, 'GET', 'session')
-   >>>     assert resp.json()['id'] == session.headers['Authorization'].removeprefix('Bearer ')
-
-To interact with the Photoprism server in any capacity, you need an
-access token. You can request this from the server either as a
-:class:`User` or a :class:`Client`. To create either of these objects,
-you will need to pass the base URL to the API. You can either use the
-:func:`get_api_url` function or you can type the URL manually.
-
 .. autoclass:: User
    :members:
 
