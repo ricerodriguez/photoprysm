@@ -58,6 +58,29 @@ def get(
         rv.append(Album.fromjson(raw_album))
     return rv
             
+def get_by_name(
+        session: requests.Session,
+        server_api: str,
+        name: str,
+        # Keyword only
+        **kwargs) -> Album|None:
+    '''
+    Get albums matching the provided query.
+
+    :param session: Session to make the request from
+    :param server_api: String with the base URL for the API
+    :param name: Title of the album.
+    '''
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, 'albums?count=1'),
+        method = 'GET',
+        data = json.dumps({'Title':name}))
+    if len(resp.json()) == 0:
+        logger.info(f'No album found matching title with \'{name}\'.')
+        return None
+    return Album.fromjson(resp.json()[0])
+
 def create(
         session: requests.Session,
         server_api: str,

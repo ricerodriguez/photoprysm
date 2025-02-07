@@ -24,8 +24,9 @@ from .models.photos import *
 
 # Add aliases from the top
 from .api.albums import get as get_albums
-from .api.albums import create as create_album
 from .api.albums import get_by_uid as get_album_by_uid
+from .api.albums import get_by_name as get_album_by_name
+from .api.albums import create as create_album
 from .api.albums import delete as delete_album
 from .api.albums import like as like_album
 from .api.albums import unlike as unlike_album
