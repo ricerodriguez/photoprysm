@@ -250,27 +250,20 @@ def get_tokens_from_session(
 def request(
         session: requests.Session,
         url: str,
-        method: str, *,
-        headers: Optional[dict[str,str]] = None,
-        params: Optional[dict[str,str]] = None,
-        data: Optional[dict[str,str]] = None, **kwargs) -> requests.Response:
+        method: str,
+        **kwargs) -> requests.Response:
     '''Send the request from a pre-configured `requests.Session`_ instance.
 
     :param session: requests.Session handle with the access token pre-configured
     :type session: `requests.Session`_
     :param url: URL to send the requests to
     :param method: Method of request, e.g. GET, POST, PUT, DELETE
-    :param headers: Headers to send the request with. Defaults to {'accept:application/json', 'Content-Type':'application/json'}
-    :param params: Dictionary, list of tuples or bytes to send in the query string for the Request.
-    :param data: Data to send with the request
     :returns: Response from the server after sending the request
     '''
     resp = session.request(
         method = method,
         url = url,
-        params = params,
-        data = data,
-        headers = headers, **kwargs)
+        **kwargs)
     # Raises the error if one occurred
     resp.raise_for_status()
     return resp
