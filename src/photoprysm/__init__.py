@@ -1,7 +1,7 @@
 """Top-level package for Photoprysm."""
 __author__ = """Rice Rodriguez"""
 __email__ = 'victoriarice@protonmail.com'
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 # Make the public members of the core accessible from the top
 from .core import Client
