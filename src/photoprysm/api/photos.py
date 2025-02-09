@@ -360,7 +360,7 @@ def upload(
     >>> with photoprysm.user_session(user, server_api) as session:
     >>>     with open('my_photo.jpg', 'rb') as f:
     >>>         photo = photoprysm.upload_photo(session, server_api, f)
-    >>> assert photo.file_hash == sha1(Path('my_photo.jpg').read_bytes()).hexdigest()
+    >>> assert any([fp.hash == sha1(Path('my_photo.jpg').read_bytes()).hexdigest() for fp in photo.files])
 
     :param session: Pre-configured `requests.Session`_ object to send the request with
     :param server_api: Base URL of the server API
@@ -411,3 +411,50 @@ def upload(
     else:
         return get_by_file(session, server_api, f)
     
+
+def download(
+        session: requests.Session,
+        server_api: str,
+        photo: Photo|str) -> bytes|None:
+    '''Download the file associated with the given Photo.
+
+    :param session: Pre-configured `requests.Session`_ object to send the request with
+    :param server_api: Base URL of the server API
+    :param photo: Photo or UID of photo to download 
+    '''
+    tokens = core.get_tokens_from_session(session, server_api)
+    try:
+        download_token = tokens['download_token']
+    except KeyError:
+        logger.error('Download token could not be received.')
+        return None
+    # Validate user input
+    uid = core._extract_uid(photo)
+    if uid is None:
+        raise TypeError('Must pass in UID as str or as attribute of object')
+    endpoint = f'photos/{uid}/dl'
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'GET')
+    return resp.content
+
+def download_to(
+        session: requests.Session,
+        server_api: str,
+        photo: Photo|str,
+        f: io.IOBase) -> None:
+    '''Download file to a writable file object
+
+    :param session: Pre-configured `requests.Session`_ object to send the request with
+    :param server_api: Base URL of the server API
+    :param photo: Photo or UID of photo to download
+    :param f: Writable file object to write the contents of the file to
+    '''
+    content = download(session, server_api, photo)
+    if content is None:
+        logger.error(f'Ran into error while trying to download photo {photo}')
+        return None
+    f.flush()
+    f.seek(0)
+    f.write(content)

@@ -88,7 +88,6 @@ def test_upload(mock_file_path, mock_session, mock_i18n_response, mock_file, moc
     user_uid = mock_session['json']['user']['UID']
     token = mock_session['json']['config']['downloadToken']
     hashbrown = sha1(mock_file_path.read_bytes()).hexdigest()
-    print(hashbrown)
     responses.get(
         url = urljoin(server_api, 'session'),
         **mock_session)
@@ -108,3 +107,15 @@ def test_upload(mock_file_path, mock_session, mock_i18n_response, mock_file, moc
         **mock_photo)
     with open(mock_file_path, 'rb') as f:
         photo = photos.upload(session, server_api, f)
+
+@responses.activate
+def test_download(mock_session, mock_photo, mock_file_path, server_api, session):
+    photo = mock_photo['json']['UID']
+    responses.get(
+        url = urljoin(server_api, 'session'),
+        **mock_session)
+    responses.get(
+        url = urljoin(server_api, f'photos/{photo}/dl'),
+        status = 200,
+        body = mock_file_path.read_bytes())
+    assert photos.download(session, server_api, photo) == mock_file_path.read_bytes()

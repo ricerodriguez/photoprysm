@@ -53,3 +53,5 @@ from .api.photos import pop_file as pop_photo_file
 from .api.photos import like as like_photo
 from .api.photos import unlike as unlike_photo
 from .api.photos import upload
+from .api.photos import download
+from .api.photos import download_to

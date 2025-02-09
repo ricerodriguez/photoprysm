@@ -1,7 +1,8 @@
 # import io
+import json
 from .base import ModelBase
 from dataclasses import dataclass, field, fields, InitVar
-from typing import Optional
+from typing import Any, Optional, Self
 from datetime import datetime
 
 @dataclass
@@ -108,12 +109,26 @@ class Photo(ModelBase, required = ['uid']):
     name: Optional[str] = None
     title: Optional[str] = None
     description: Optional[str] = None
-    file_uid: Optional[str] = None
-    file_name: Optional[str] = None
-    file_hash: Optional[str] = None
     width: Optional[int] = None
     height: Optional[int] = None
     files: Optional[list[PhotoFile]] = None
+
+    @property
+    def json(self):
+        d = json.loads(super().json)
+        # Construct it as a dict, since that's how it comes in
+        d['files'] = {}
+        for i,f in enumerate(self.files): d['files'][i] = f
+        return json.dumps(d)
+
+    @classmethod
+    def fromjson(cls: Self, djson: dict[str,Any]):
+        # Just make sure it's a list
+        if 'files' in djson:
+            if isinstance(djson['files'], dict):
+                djson['files'] = list(djson['files'].values())
+        inst = super().fromjson(djson)
+        return inst
 
 @dataclass
 class PhotoDetails(ModelBase):
