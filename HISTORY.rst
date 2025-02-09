@@ -2,6 +2,11 @@
 History
 =======
 
+0.1.1 (2025-02-11)
+------------------
+
+* Fix issue with not properly detecting when an album of the given name does not exist for get_album_by_name()
+
 0.1.0 (2025-02-11)
 ------------------
 
