@@ -51,6 +51,7 @@ General
 
 .. autofunction:: start_import
 .. autofunction:: start_index
+.. autofunction:: get_tokens_from_session
 
 Albums
 ------
@@ -119,22 +120,23 @@ Models
 Functions
 ^^^^^^^^^
 
-.. autofunction:: archive_photo
 .. autofunction:: get_photos
 .. autofunction:: get_photo_by_uid
-..
-  COMING SOON
-  -.. autofunction:: get_by_file
+.. autofunction:: get_photo_by_file
+.. autofunction:: upload
+.. autofunction:: archive_photo
+.. autofunction:: restore_photo
+.. autofunction:: clear_photo_from_archive
+.. autofunction:: delete_photo
 .. autofunction:: update_photo
 .. autofunction:: approve_photo
-.. autofunction:: set_photo_primary_file
-.. autofunction:: pop_photo_file
+..
+ -.. autofunction:: set_photo_primary_file
+ -.. autofunction:: pop_photo_file
+.. autofunction:: set_photo_as_private
 .. autofunction:: like_photo
 .. autofunction:: unlike_photo
-.. autofunction:: delete_photo
-.. autofunction:: restore_photo
-.. autofunction:: clear_photo_from_archive           
-.. autofunction:: set_photo_as_private
+
 
 .. Links
 .. _`Photoprism CLI`: https://docs.photoprism.app/getting-started/docker-compose/#command-line-interface
@@ -149,3 +151,4 @@ Functions
 .. _`Indexing Your Library`: https://docs.photoprism.app/user-guide/library/
 .. _`Photoprism Volumes`: https://docs.photoprism.app/getting-started/docker-compose/#volumes
 .. _`Importing Files`: https://docs.photoprism.app/user-guide/library/#importing-files
+.. _`IOBase`: https://docs.python.org/3/library/io.html#io.IOBase

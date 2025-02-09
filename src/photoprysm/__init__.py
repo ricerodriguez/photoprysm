@@ -12,6 +12,7 @@ from .core import get_api_url
 from .core import request
 from .core import start_index
 from .core import start_import
+from .core import get_tokens_from_session
 
 # Make the API accessible from the top
 from .api import albums

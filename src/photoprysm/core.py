@@ -67,8 +67,7 @@ class Client:
 class User:
     username: str
     password: str = field(repr = False)
-    uid: str | None = None
-    download_token: str | None = None
+    uid: Optional[str] = None
 
     def login(self, server_api: str) -> requests.Session:
         '''Login to the server as a User
@@ -90,7 +89,7 @@ class User:
         self._session = requests.Session()
         self._session.auth = PhotoprismAccessToken(resp.json()['id'])
         self.uid = self.uid or resp.json()['user']['UID']
-        self.download_token = self.download_token or resp.json()['config']['downloadToken']
+        # self.download_token = self.download_token or resp.json()['config']['downloadToken']
         return self._session
 
     def request(self, **kwargs) -> requests.Response:
@@ -113,8 +112,13 @@ class User:
         self._session = None
 
 class PhotoprismAccessToken(requests.auth.AuthBase):
-    def __init__(self, token):
+    def __init__(self,
+                 token: str,
+                 download_token: Optional[str] = None,
+                 preview_token: Optional[str] = None):
         self.token = token
+        self.download_token = download_token
+        self.preview_token = preview_token
 
     def __call__(self, request: requests.Request):
         request.headers['Authorization'] = f'Bearer {self.token}'
@@ -213,6 +217,35 @@ def start_index(
         url = urljoin(server_api, 'index'),
         method = 'POST',
         data = json.dumps(data))
+
+def get_tokens_from_session(
+        session: requests.Session,
+        server_api: str) -> dict[str,str]:
+    '''Get auth tokens (access, download, preview) from Session
+
+    >>> get_tokens_from_session(session, server_api)
+    {'access_token': 'example_value', 'download_token': 'example_value', 'preview_token': 'example_value'}
+
+    :param session: Pre-configured `requests.Session`_ object to send the request with
+    :param server_api: Base URL of the server API
+    '''
+    resp = request(
+        session = session,
+        url = urljoin(server_api, 'session'),
+        method = 'GET')
+    try:
+        token = resp.json()['id']
+        download_token = resp.json()['config']['downloadToken']
+        preview_token = resp.json()['config']['previewToken']
+    except KeyError:
+        logger.error('Something went wrong when getting the session. Is the '
+                     'session already closed?')
+        return {}
+    return {
+        'access_token': token,
+        'download_token': download_token,
+        'preview_token': preview_token
+    }
 
 def request(
         session: requests.Session,
