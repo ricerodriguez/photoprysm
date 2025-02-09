@@ -8,6 +8,7 @@ History
 * Add upload()
 * Add get_photo_by_file()
 * Add get_tokens_from_session()
+* Allow passing keyword arguments to request() to pass to requests.Request constructor
 
 0.0.3 (2025-02-02)
 ------------------
