@@ -1,0 +1,1298 @@
+{
+  "access_token": "234200000000000000000000000000000000000000000000",
+  "config": {
+    "mode": "user",
+    "name": "Demo",
+    "about": "PhotoPrism®",
+    "edition": "plus",
+    "version": "250129-978ef660e-Linux-AMD64-Plus",
+    "copyright": "(c) 2018-2025 PhotoPrism UG. All rights reserved.",
+    "flags": "public demo sponsor experimental settings",
+    "baseUri": "",
+    "staticUri": "https://demo-cdn.photoprism.app/static",
+    "cssUri": "https://demo-cdn.photoprism.app/static/build/app.071cb87ea90aee244548.css",
+    "jsUri": "https://demo-cdn.photoprism.app/static/build/app.9c6c86e50bd83c20c699.js",
+    "manifestUri": "/manifest.json?2e47568b",
+    "apiUri": "/api/v1",
+    "contentUri": "https://demo-cdn.photoprism.app/api/v1",
+    "videoUri": "https://demo-cdn.photoprism.app/api/v1",
+    "wallpaperUri": "https://demo-cdn.photoprism.app/static/img/wallpaper/welcome.jpg",
+    "siteUrl": "https://demo.photoprism.app/",
+    "siteDomain": "demo.photoprism.app",
+    "siteAuthor": "PhotoPrism UG",
+    "siteTitle": "PhotoPrism",
+    "siteCaption": "Demo",
+    "siteDescription": "AI-Powered Photos App for the Decentralized Web",
+    "sitePreview": "https://i.photoprism.app/prism?cover=64&style=centered%20dark&title=Demo",
+    "legalInfo": "",
+    "legalUrl": "",
+    "appName": "Demo",
+    "appMode": "standalone",
+    "appIcon": "logo",
+    "appColor": "#000000",
+    "restart": false,
+    "debug": false,
+    "trace": false,
+    "test": false,
+    "demo": true,
+    "sponsor": true,
+    "readonly": false,
+    "uploadNSFW": false,
+    "public": true,
+    "authMode": "public",
+    "usersPath": "users",
+    "loginUri": "/library/browse",
+    "registerUri": "",
+    "passwordLength": 0,
+    "passwordResetUri": "",
+    "experimental": true,
+    "albumCategories": null,
+    "albums": [
+      {
+        "ID": 1,
+        "UID": "artiskh2amkzizr6",
+        "Slug": "berlin",
+        "Type": "album",
+        "Title": "Berlin",
+        "Location": "",
+        "Category": "",
+        "Caption": "",
+        "Description": "",
+        "Notes": "",
+        "Filter": "",
+        "Order": "oldest",
+        "Template": "",
+        "State": "",
+        "Country": "zz",
+        "Year": 0,
+        "Month": 0,
+        "Day": 0,
+        "Favorite": true,
+        "Private": false,
+        "Thumb": "bf2a691e21b3403fc93a0e4ce2f33307cace2faf",
+        "CreatedBy": "urtir4e5t5p1yoqg",
+        "CreatedAt": "2023-04-22T14:07:29Z",
+        "UpdatedAt": "2023-04-22T14:08:45.461421502Z",
+        "DeletedAt": null
+      },
+      {
+        "ID": 2,
+        "UID": "artisl61ivvteyk1",
+        "Slug": "california",
+        "Type": "album",
+        "Title": "California",
+        "Location": "",
+        "Category": "",
+        "Caption": "",
+        "Description": "",
+        "Notes": "",
+        "Filter": "",
+        "Order": "oldest",
+        "Template": "",
+        "State": "",
+        "Country": "zz",
+        "Year": 0,
+        "Month": 0,
+        "Day": 0,
+        "Favorite": true,
+        "Private": false,
+        "Thumb": "e4d493c81905b0267976c1e8446f9fe33bbad832",
+        "CreatedBy": "urtir4e5t5p1yoqg",
+        "CreatedAt": "2023-04-22T14:07:54Z",
+        "UpdatedAt": "2023-04-22T14:07:59.138137001Z",
+        "DeletedAt": null
+      }
+    ],
+    "cameras": [
+      {
+        "ID": 12,
+        "Slug": "apple-iphone-15-pro",
+        "Name": "Apple iPhone 15 Pro",
+        "Make": "Apple",
+        "Model": "iPhone 15 Pro",
+        "Type": "phone"
+      },
+      {
+        "ID": 7,
+        "Slug": "apple-iphone-4s",
+        "Name": "Apple iPhone 4S",
+        "Make": "Apple",
+        "Model": "iPhone 4S",
+        "Type": "phone"
+      },
+      {
+        "ID": 8,
+        "Slug": "apple-iphone-5s",
+        "Name": "Apple iPhone 5s",
+        "Make": "Apple",
+        "Model": "iPhone 5s",
+        "Type": "phone"
+      },
+      {
+        "ID": 9,
+        "Slug": "apple-iphone-6",
+        "Name": "Apple iPhone 6",
+        "Make": "Apple",
+        "Model": "iPhone 6",
+        "Type": "phone"
+      },
+      {
+        "ID": 10,
+        "Slug": "apple-iphone-se",
+        "Name": "Apple iPhone SE",
+        "Make": "Apple",
+        "Model": "iPhone SE",
+        "Type": "phone"
+      },
+      {
+        "ID": 5,
+        "Slug": "canon-eos-30d",
+        "Name": "Canon EOS 30D",
+        "Make": "Canon",
+        "Model": "EOS 30D",
+        "Type": "body"
+      },
+      {
+        "ID": 3,
+        "Slug": "canon-eos-5d",
+        "Name": "Canon EOS 5D",
+        "Make": "Canon",
+        "Model": "EOS 5D",
+        "Type": "body"
+      },
+      {
+        "ID": 6,
+        "Slug": "canon-eos-6d",
+        "Name": "Canon EOS 6D",
+        "Make": "Canon",
+        "Model": "EOS 6D",
+        "Type": "body"
+      },
+      {
+        "ID": 4,
+        "Slug": "canon-eos-7d",
+        "Name": "Canon EOS 7D",
+        "Make": "Canon",
+        "Model": "EOS 7D",
+        "Type": "body"
+      },
+      {
+        "ID": 11,
+        "Slug": "huawei-p30",
+        "Name": "HUAWEI P30",
+        "Make": "HUAWEI",
+        "Model": "P30",
+        "Type": "phone"
+      },
+      {
+        "ID": 2,
+        "Slug": "olympus-c2500l",
+        "Name": "Olympus C2500L",
+        "Make": "Olympus",
+        "Model": "C2500L"
+      },
+      {
+        "ID": 13,
+        "Slug": "samsung-galaxy-s20",
+        "Name": "Samsung Galaxy S20",
+        "Make": "Samsung",
+        "Model": "Galaxy S20",
+        "Type": "phone"
+      },
+      {
+        "ID": 1,
+        "Slug": "zz",
+        "Name": "Unknown",
+        "Make": "",
+        "Model": "Unknown"
+      }
+    ],
+    "lenses": [
+      {
+        "ID": 11,
+        "Slug": "apple-iphone-15-pro-2-22mm-f-2-2",
+        "Name": "Apple iPhone 15 Pro 2.22mm f/2.2",
+        "Make": "Apple",
+        "Model": "iPhone 15 Pro 2.22mm f/2.2",
+        "Type": ""
+      },
+      {
+        "ID": 12,
+        "Slug": "apple-iphone-15-pro-6-765mm-f-1-78",
+        "Name": "Apple iPhone 15 Pro 6.765mm f/1.78",
+        "Make": "Apple",
+        "Model": "iPhone 15 Pro 6.765mm f/1.78",
+        "Type": ""
+      },
+      {
+        "ID": 14,
+        "Slug": "apple-iphone-15-pro-6-86mm-f-1-78",
+        "Name": "Apple iPhone 15 Pro 6.86mm f/1.78",
+        "Make": "Apple",
+        "Model": "iPhone 15 Pro 6.86mm f/1.78",
+        "Type": ""
+      },
+      {
+        "ID": 13,
+        "Slug": "apple-iphone-15-pro-9mm-f-2-8",
+        "Name": "Apple iPhone 15 Pro 9mm f/2.8",
+        "Make": "Apple",
+        "Model": "iPhone 15 Pro 9mm f/2.8",
+        "Type": ""
+      },
+      {
+        "ID": 7,
+        "Slug": "apple-iphone-5s-4-12mm-f-2-2",
+        "Name": "Apple iPhone 5s 4.12mm f/2.2",
+        "Make": "Apple",
+        "Model": "iPhone 5s 4.12mm f/2.2",
+        "Type": ""
+      },
+      {
+        "ID": 9,
+        "Slug": "apple-iphone-6-4-15mm-f-2-2",
+        "Name": "Apple iPhone 6 4.15mm f/2.2",
+        "Make": "Apple",
+        "Model": "iPhone 6 4.15mm f/2.2",
+        "Type": ""
+      },
+      {
+        "ID": 10,
+        "Slug": "apple-iphone-se-4-15mm-f-2-2",
+        "Name": "Apple iPhone SE 4.15mm f/2.2",
+        "Make": "Apple",
+        "Model": "iPhone SE 4.15mm f/2.2",
+        "Type": ""
+      },
+      {
+        "ID": 4,
+        "Slug": "ef100mm-f-2-8l-macro-is-usm",
+        "Name": "EF100mm f/2.8L Macro IS USM",
+        "Make": "",
+        "Model": "EF100mm f/2.8L Macro IS USM",
+        "Type": ""
+      },
+      {
+        "ID": 6,
+        "Slug": "ef16-35mm-f-2-8l-ii-usm",
+        "Name": "EF16-35mm f/2.8L II USM",
+        "Make": "",
+        "Model": "EF16-35mm f/2.8L II USM",
+        "Type": ""
+      },
+      {
+        "ID": 2,
+        "Slug": "ef24-105mm-f-4l-is-usm",
+        "Name": "EF24-105mm f/4L IS USM",
+        "Make": "",
+        "Model": "EF24-105mm f/4L IS USM",
+        "Type": ""
+      },
+      {
+        "ID": 5,
+        "Slug": "ef28mm-f-1-8-usm",
+        "Name": "EF28mm f/1.8 USM",
+        "Make": "",
+        "Model": "EF28mm f/1.8 USM",
+        "Type": ""
+      },
+      {
+        "ID": 8,
+        "Slug": "ef35mm-f-2-is-usm",
+        "Name": "EF35mm f/2 IS USM",
+        "Make": "",
+        "Model": "EF35mm f/2 IS USM",
+        "Type": ""
+      },
+      {
+        "ID": 3,
+        "Slug": "ef70-200mm-f-4l-is-usm",
+        "Name": "EF70-200mm f/4L IS USM",
+        "Make": "",
+        "Model": "EF70-200mm f/4L IS USM",
+        "Type": ""
+      },
+      {
+        "ID": 1,
+        "Slug": "zz",
+        "Name": "Unknown",
+        "Make": "",
+        "Model": "Unknown",
+        "Type": ""
+      }
+    ],
+    "countries": [
+      {
+        "ID": "at",
+        "Slug": "austria",
+        "Name": "Austria"
+      },
+      {
+        "ID": "bw",
+        "Slug": "botswana",
+        "Name": "Botswana"
+      },
+      {
+        "ID": "ca",
+        "Slug": "canada",
+        "Name": "Canada"
+      },
+      {
+        "ID": "cu",
+        "Slug": "cuba",
+        "Name": "Cuba"
+      },
+      {
+        "ID": "fr",
+        "Slug": "france",
+        "Name": "France"
+      },
+      {
+        "ID": "de",
+        "Slug": "germany",
+        "Name": "Germany"
+      },
+      {
+        "ID": "gr",
+        "Slug": "greece",
+        "Name": "Greece"
+      },
+      {
+        "ID": "it",
+        "Slug": "italy",
+        "Name": "Italy"
+      },
+      {
+        "ID": "za",
+        "Slug": "south-africa",
+        "Name": "South Africa"
+      },
+      {
+        "ID": "es",
+        "Slug": "spain",
+        "Name": "Spain"
+      },
+      {
+        "ID": "ch",
+        "Slug": "switzerland",
+        "Name": "Switzerland"
+      },
+      {
+        "ID": "ua",
+        "Slug": "ukraine",
+        "Name": "Ukraine"
+      },
+      {
+        "ID": "gb",
+        "Slug": "united-kingdom",
+        "Name": "United Kingdom"
+      },
+      {
+        "ID": "us",
+        "Slug": "united-states",
+        "Name": "United States"
+      },
+      {
+        "ID": "zz",
+        "Slug": "zz",
+        "Name": "Unknown"
+      }
+    ],
+    "people": [
+      {
+        "UID": "jsr0p3vxn4gfd4q0",
+        "Name": "adsadsa",
+        "Keywords": [
+          "adsadsa"
+        ]
+      }
+    ],
+    "thumbs": [
+      {
+        "size": "fit_720",
+        "usage": "SD TV, Mobile",
+        "w": 720,
+        "h": 720
+      },
+      {
+        "size": "fit_1280",
+        "usage": "HD TV, SXGA",
+        "w": 1280,
+        "h": 1024
+      },
+      {
+        "size": "fit_1920",
+        "usage": "Full HD",
+        "w": 1920,
+        "h": 1200
+      },
+      {
+        "size": "fit_2560",
+        "usage": "Quad HD, Notebooks",
+        "w": 2560,
+        "h": 1600
+      },
+      {
+        "size": "fit_4096",
+        "usage": "DCI 4K, Retina 4K",
+        "w": 4096,
+        "h": 4096
+      },
+      {
+        "size": "fit_7680",
+        "usage": "8K Ultra HD 2",
+        "w": 7680,
+        "h": 4320
+      }
+    ],
+    "tier": 8,
+    "membership": "plus",
+    "customer": "",
+    "mapKey": "3eVP4gsjeeA5spJ09Uhl",
+    "downloadToken": "public",
+    "previewToken": "public",
+    "disable": {
+      "restart": false,
+      "webdav": true,
+      "settings": false,
+      "places": false,
+      "backups": false,
+      "tensorflow": false,
+      "faces": false,
+      "classification": false,
+      "ffmpeg": false,
+      "exiftool": false,
+      "vips": false,
+      "sips": true,
+      "darktable": false,
+      "rawtherapee": false,
+      "imagemagick": false,
+      "heifconvert": false,
+      "vectors": false,
+      "jpegxl": false,
+      "raw": false
+    },
+    "count": {
+      "all": 151,
+      "photos": 151,
+      "live": 4,
+      "videos": 2,
+      "cameras": 12,
+      "lenses": 13,
+      "countries": 14,
+      "hidden": 0,
+      "archived": 2,
+      "favorites": 2,
+      "review": 6,
+      "stories": 0,
+      "private": 3,
+      "albums": 3,
+      "private_albums": 0,
+      "moments": 4,
+      "private_moments": 0,
+      "months": 50,
+      "private_months": 0,
+      "states": 21,
+      "private_states": 0,
+      "folders": 24,
+      "private_folders": 0,
+      "files": 312,
+      "people": 1,
+      "places": 51,
+      "labels": 36,
+      "labelMaxPhotos": 32
+    },
+    "pos": {
+      "uid": "psqvciwoevuyoo5w",
+      "cid": "s2:47a85a63f764",
+      "utc": "2024-10-23T12:53:58Z",
+      "lat": 52.45223055555556,
+      "lng": 13.303786111111112
+    },
+    "years": [
+      2024,
+      2023,
+      2021,
+      2020,
+      2019,
+      2018,
+      2017,
+      2016,
+      2015,
+      2014,
+      2013,
+      2012,
+      2011,
+      2010,
+      2002,
+      1979
+    ],
+    "colors": [
+      {
+        "Example": "#AB47BC",
+        "Name": "Purple",
+        "Slug": "purple"
+      },
+      {
+        "Example": "#FF00FF",
+        "Name": "Magenta",
+        "Slug": "magenta"
+      },
+      {
+        "Example": "#EC407A",
+        "Name": "Pink",
+        "Slug": "pink"
+      },
+      {
+        "Example": "#EF5350",
+        "Name": "Red",
+        "Slug": "red"
+      },
+      {
+        "Example": "#FFA726",
+        "Name": "Orange",
+        "Slug": "orange"
+      },
+      {
+        "Example": "#D4AF37",
+        "Name": "Gold",
+        "Slug": "gold"
+      },
+      {
+        "Example": "#FDD835",
+        "Name": "Yellow",
+        "Slug": "yellow"
+      },
+      {
+        "Example": "#CDDC39",
+        "Name": "Lime",
+        "Slug": "lime"
+      },
+      {
+        "Example": "#66BB6A",
+        "Name": "Green",
+        "Slug": "green"
+      },
+      {
+        "Example": "#009688",
+        "Name": "Teal",
+        "Slug": "teal"
+      },
+      {
+        "Example": "#00BCD4",
+        "Name": "Cyan",
+        "Slug": "cyan"
+      },
+      {
+        "Example": "#2196F3",
+        "Name": "Blue",
+        "Slug": "blue"
+      },
+      {
+        "Example": "#A1887F",
+        "Name": "Brown",
+        "Slug": "brown"
+      },
+      {
+        "Example": "#F5F5F5",
+        "Name": "White",
+        "Slug": "white"
+      },
+      {
+        "Example": "#9E9E9E",
+        "Name": "Grey",
+        "Slug": "grey"
+      },
+      {
+        "Example": "#212121",
+        "Name": "Black",
+        "Slug": "black"
+      }
+    ],
+    "categories": [
+      {
+        "UID": "lsqvcihml6qepea0",
+        "Slug": "animal",
+        "Name": "Animal"
+      },
+      {
+        "UID": "lsqvciqi7n6worx3",
+        "Slug": "architecture",
+        "Name": "Architecture"
+      },
+      {
+        "UID": "lsqvcimfvg3kevzc",
+        "Slug": "beetle",
+        "Name": "Beetle"
+      },
+      {
+        "UID": "lsqvcij29wifqmjf",
+        "Slug": "bird",
+        "Name": "Bird"
+      },
+      {
+        "UID": "lsqvcih696iqaeac",
+        "Slug": "building",
+        "Name": "Building"
+      },
+      {
+        "UID": "lsqvcighfnyfyduy",
+        "Slug": "car",
+        "Name": "Car"
+      },
+      {
+        "UID": "lsqvciikkt5kuyf0",
+        "Slug": "cat",
+        "Name": "Cat"
+      },
+      {
+        "UID": "lsqvcioqmiinxpv4",
+        "Slug": "farm",
+        "Name": "Farm"
+      },
+      {
+        "UID": "lsqvciipctpowkjw",
+        "Slug": "insect",
+        "Name": "Insect"
+      },
+      {
+        "UID": "lsqvcihlz39xvt3b",
+        "Slug": "landscape",
+        "Name": "Landscape"
+      },
+      {
+        "UID": "lsqvciobeh8fv1mi",
+        "Slug": "monkey",
+        "Name": "Monkey"
+      },
+      {
+        "UID": "lsqvcih1hovft0mj",
+        "Slug": "mountain",
+        "Name": "Mountain"
+      },
+      {
+        "UID": "lsqvcigfwa8kpkm3",
+        "Slug": "nature",
+        "Name": "Nature"
+      },
+      {
+        "UID": "lsqvcixdfw0dwylb",
+        "Slug": "people",
+        "Name": "People"
+      },
+      {
+        "UID": "lsqvcigj1tarxlnw",
+        "Slug": "plant",
+        "Name": "Plant"
+      },
+      {
+        "UID": "lsqvcir4eailgibr",
+        "Slug": "reptile",
+        "Name": "Reptile"
+      },
+      {
+        "UID": "lsqvcigfs9wh8qu4",
+        "Slug": "shop",
+        "Name": "Shop"
+      },
+      {
+        "UID": "lsqvcipmbiwt6v0x",
+        "Slug": "snow",
+        "Name": "Snow"
+      },
+      {
+        "UID": "lsqvcipifxug9spf",
+        "Slug": "tower",
+        "Name": "Tower"
+      },
+      {
+        "UID": "lsqvcigofehggyqi",
+        "Slug": "vehicle",
+        "Name": "Vehicle"
+      },
+      {
+        "UID": "lsqvcir4ilnons7m",
+        "Slug": "water",
+        "Name": "Water"
+      },
+      {
+        "UID": "lsqvcimv4b9sy9fn",
+        "Slug": "wildlife",
+        "Name": "Wildlife"
+      }
+    ],
+    "clip": 160,
+    "server": {
+      "cores": 32,
+      "routines": 97,
+      "memory": {
+        "total": 134971228160,
+        "free": 84807557120,
+        "used": 55676096,
+        "reserved": 179303472,
+        "info": "Used 56 MB / Reserved 179 MB"
+      }
+    },
+    "settings": {
+      "ui": {
+        "scrollbar": true,
+        "zoom": false,
+        "theme": "default",
+        "language": "en",
+        "timeZone": ""
+      },
+      "search": {
+        "batchSize": 0,
+        "listView": true
+      },
+      "maps": {
+        "animate": 0,
+        "style": ""
+      },
+      "features": {
+        "account": true,
+        "albums": true,
+        "archive": true,
+        "delete": true,
+        "download": true,
+        "edit": true,
+        "estimates": true,
+        "favorites": true,
+        "files": true,
+        "folders": true,
+        "import": true,
+        "labels": true,
+        "library": true,
+        "logs": true,
+        "moments": true,
+        "people": true,
+        "places": true,
+        "private": true,
+        "ratings": true,
+        "reactions": true,
+        "review": true,
+        "search": true,
+        "services": true,
+        "settings": true,
+        "share": true,
+        "upload": true,
+        "videos": true
+      },
+      "import": {
+        "path": "/",
+        "move": false,
+        "dest": ""
+      },
+      "index": {
+        "path": "/",
+        "convert": true,
+        "rescan": false,
+        "skipArchived": false
+      },
+      "stack": {
+        "uuid": true,
+        "meta": true,
+        "name": false
+      },
+      "share": {
+        "title": ""
+      },
+      "download": {
+        "name": "file",
+        "disabled": false,
+        "originals": true,
+        "mediaRaw": false,
+        "mediaSidecar": false
+      },
+      "templates": {
+        "default": "index.gohtml"
+      }
+    },
+    "acl": {
+      "albums": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "calendar": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "config": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "default": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "favorites": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "feedback": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "files": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "folders": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "labels": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "logs": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "metrics": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "moments": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "passcode": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "password": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "people": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "photos": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "places": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "services": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "sessions": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "settings": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "shares": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "users": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "videos": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      },
+      "webdav": {
+        "access_all": true,
+        "access_library": true,
+        "access_own": true,
+        "access_shared": true,
+        "create": true,
+        "delete": true,
+        "download": true,
+        "full_access": true,
+        "manage": true,
+        "rate": true,
+        "react": true,
+        "share": true,
+        "subscribe": true,
+        "update": true,
+        "view": true
+      }
+    },
+    "ext": {
+      "oidc": {
+        "enabled": false,
+        "icon": "https://demo-cdn.photoprism.app/static/img/oidc.svg",
+        "loginUri": "/api/v1/oidc/login",
+        "provider": "OpenID",
+        "redirect": false,
+        "register": false
+      },
+      "plus": {}
+    }
+  },
+  "data": {
+    "tokens": null,
+    "shares": null
+  },
+  "expires_in": 0,
+  "id": "234200000000000000000000000000000000000000000000",
+  "provider": "default",
+  "scope": "",
+  "session_id": "a9b8ff820bf40ab451910f8bbfe401b2432446693aa539538fbd2399560a722f",
+  "status": "success",
+  "token_type": "Bearer",
+  "user": {
+    "ID": 1,
+    "UID": "usqvci8x62r01fry",
+    "AuthProvider": "local",
+    "AuthMethod": "",
+    "AuthID": "",
+    "Name": "admin",
+    "DisplayName": "Admin",
+    "Email": "",
+    "Role": "admin",
+    "Attr": "",
+    "SuperAdmin": true,
+    "CanLogin": true,
+    "LoginAt": null,
+    "WebDAV": true,
+    "BasePath": "",
+    "UploadPath": "",
+    "CanInvite": true,
+    "Details": {
+      "BirthYear": -1,
+      "BirthMonth": -1,
+      "BirthDay": -1,
+      "NameTitle": "",
+      "GivenName": "",
+      "MiddleName": "",
+      "FamilyName": "",
+      "NameSuffix": "",
+      "NickName": "",
+      "NameSrc": "",
+      "Gender": "",
+      "About": "",
+      "Bio": "",
+      "Location": "",
+      "Country": "zz",
+      "Phone": "",
+      "SiteURL": "",
+      "ProfileURL": "",
+      "OrgTitle": "",
+      "OrgName": "",
+      "OrgEmail": "",
+      "OrgPhone": "",
+      "OrgURL": "",
+      "CreatedAt": "2025-01-29T21:18:08.680946065Z",
+      "UpdatedAt": "2025-01-29T21:18:08.681407854Z"
+    },
+    "Settings": {
+      "CreatedAt": "2025-02-01T19:01:14.911915934Z",
+      "UpdatedAt": "2025-02-01T19:01:14.911915934Z"
+    },
+    "Thumb": "",
+    "ThumbSrc": "",
+    "CreatedAt": "2025-01-29T21:18:08.679280503Z",
+    "UpdatedAt": "2025-01-29T21:18:08.679280503Z"
+  }
+}
