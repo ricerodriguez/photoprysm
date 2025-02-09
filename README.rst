@@ -23,7 +23,9 @@ Features
 
 * Made to work with the popular Requests_ package
 * Session management for both Users and Clients
-
+* Convenient functions to simplify interaction with the REST API
+* Well documented API
+  
 .. _Requests: https://requests.readthedocs.io
 
 Quickstart
@@ -46,6 +48,14 @@ Or you can use the context manager so that it will log out automatically when yo
 >>> with photoprysm.user_session(user, server_api) as session:
 >>>     # Do some stuff
 >>> # Logged out
+
+Things that would normally require multiple API calls can be done with a single function call:
+
+>>> with photoprysm.user_session(user, server_api) as session:
+>>>     with open('my_file.jpg', 'rb') as f:
+>>>         photo = photoprysm.upload(session, server_api, f)
+>>>     # Many functions return models that can be used in subsequent calls to other functions
+>>>     photoprysm.approve_photo(session, server_api, photo)
 
 Credits
 -------

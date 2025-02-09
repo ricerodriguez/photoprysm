@@ -41,8 +41,9 @@ Album(uid='example-uid', title='Summer Vacation', favorite=False, private=False,
 
 You can also use the request function to manually put in the endpoints::
 
+    from urllib.parse import urljoin
     with user_session(user, server_api) as session:
-        resp = photoprysm.request(session, server_api, 'GET', 'session')
+        resp = photoprysm.request(session, urljoin(server_api, 'session'), 'GET')
         assert resp.json()['id'] == session.headers['Authorization'].removeprefix('Bearer ')
 
 

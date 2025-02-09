@@ -109,7 +109,6 @@ Models
 ^^^^^^
 
 .. autoclass:: Photo
-   :members:
 .. autoclass:: PhotoFile
    :members:
 .. autoclass:: PhotoDetails
