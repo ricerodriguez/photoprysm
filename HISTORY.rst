@@ -5,7 +5,9 @@ History
 0.1.0 (2025-02-11)
 ------------------
 
-* Add upload() and get_photo_by_file()
+* Add upload()
+* Add get_photo_by_file()
+* Add get_tokens_from_session()
 
 0.0.3 (2025-02-02)
 ------------------
