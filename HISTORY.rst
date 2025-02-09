@@ -6,6 +6,7 @@ History
 ------------------
 
 * Add upload()
+* Add download()
 * Add get_photo_by_file()
 * Add get_tokens_from_session()
 * Allow passing keyword arguments to request() to pass to requests.Request constructor
