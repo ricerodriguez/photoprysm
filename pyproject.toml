@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "photoprysm"
-version = "0.0.3"
+version = "0.1.0"
 description = "A Python client for interacting the the Photoprism REST API."
 readme = "README.rst"
 authors = [
