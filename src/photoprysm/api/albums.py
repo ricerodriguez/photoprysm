@@ -61,9 +61,7 @@ def get(
 def get_by_name(
         session: requests.Session,
         server_api: str,
-        name: str,
-        # Keyword only
-        **kwargs) -> Album|None:
+        name: str) -> Album|None:
     '''
     Get albums matching the provided query.
 
@@ -76,7 +74,7 @@ def get_by_name(
         url = urljoin(server_api, 'albums?count=1'),
         method = 'GET',
         data = json.dumps({'Title':name}))
-    if len(resp.json()) == 0:
+    if not resp.json()[0]['Title'] == name:
         logger.info(f'No album found matching title with \'{name}\'.')
         return None
     return Album.fromjson(resp.json()[0])
