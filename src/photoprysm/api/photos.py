@@ -101,6 +101,7 @@ def get_by_file(
     :param `requests.Session`_ session: Pre-configured `requests.Session`_ object to send the request with
     :param server_api: Base URL of the server API
     :param f: File object to find the Photo of
+    :type f: `IOBase`_
     '''
     hashbrown = hashlib.sha1(f.read()).hexdigest()
     # Return cursor to start
@@ -292,13 +293,13 @@ def pop_file(
         session: requests.Session,
         server_api: str,
         photo: Photo | str,
-        _file: PhotoFile) -> PhotoFile:
+        f: PhotoFile) -> PhotoFile:
     '''Pop a file off the stack for the Photo
 
     :param requests.Session session: Pre-configured `requests.Session`_ object to send the request with
     :param str server_api: Base URL of the server API
     :param Photo photo: Photo to get the file from
-    :param PhotoFile _file: File to pop off the stack
+    :param PhotoFile f: File to pop off the stack
     :raises requests.HTTPError: If it runs into an HTTP error while sending the request
     :returns: File that was popped off the stack
     :rtype: PhotoFile
@@ -354,14 +355,17 @@ def upload(
         albums: Optional[list[Album|str]] = None) -> Photo|list[Photo]|None:
     '''Upload a file to the server as the authenticated user.
 
+    >>> from pathlib import Path
     >>> from hashlib import sha1
     >>> with photoprysm.user_session(user, server_api) as session:
-    >>>     photo = photoprysm.upload_photo(session, server_api, open('my_photo.jpg', 'rb'))
-    >>> assert photo.file_hash == sha1(open('my_photo.jpg', 'rb')).hexdigest()
+    >>>     with open('my_photo.jpg', 'rb') as f:
+    >>>         photo = photoprysm.upload_photo(session, server_api, f)
+    >>> assert photo.file_hash == sha1(Path('my_photo.jpg').read_bytes()).hexdigest()
 
-    :param user: User to upload the file as
+    :param session: Pre-configured `requests.Session`_ object to send the request with
     :param server_api: Base URL of the server API
     :param f: Raw binary file(s) object to upload
+    :type f: `IOBase`_ | list[`IOBase`_]
     :param albums: (optional) List of albums to add the files to
     :type albums: list[Album|str]
     '''

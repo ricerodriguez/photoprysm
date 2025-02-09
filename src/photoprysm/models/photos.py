@@ -1,3 +1,4 @@
+# import io
 from .base import ModelBase
 from dataclasses import dataclass, field, fields, InitVar
 from typing import Optional
@@ -6,8 +7,39 @@ from datetime import datetime
 @dataclass
 class PhotoFile(ModelBase, required = ['uid', 'photo_uid']):
     '''Dataclass for holding data about a file.
-    :param uid: UID of the PhotoFile
-    :param photo_uid: UID of the Photo this PhotoFile is associated with
+
+    :param uid:
+    :param photo_uid:
+    :param str name: (optional)
+    :param str root: (optional)
+    :param str hash: (optional)
+    :param int size: (optional)
+    :param bool primary: (optional)
+    :param int time_index: (optional)
+    :param str media_id: (optional)
+    :param int media_utc: (optional)
+    :param str instance_id: (optional)
+    :param str codec: (optional)
+    :param str file_type: (optional)
+    :param str media_type: (optional)
+    :param str mime: (optional)
+    :param int width: (optional)
+    :param int height: (optional)
+    :param int orientation: (optional)
+    :param str orientation_src: (optional)
+    :param float aspect_ratio: (optional)
+    :param str color_profile: (optional)
+    :param str main_color: (optional)
+    :param str colors: (optional)
+    :param str luminance: (optional)
+    :param int diff: (optional)
+    :param int chroma: (optional)
+    :param str software: (optional)
+    :param int mod_time: (optional)
+    :param datetime created_at: (optional)
+    :param datetime created_in: (optional)
+    :param datetime updated_at: (optional)
+    :param list markers: (optional)
     '''
     uid: str
     photo_uid: str
@@ -41,12 +73,35 @@ class PhotoFile(ModelBase, required = ['uid', 'photo_uid']):
     created_in: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     markers: Optional[list] = None
+    # stream: Optional[InitVar[bytes]] = None
+
+    # def __post_init__(self, stream):
+    #     self.stream = stream
+
+    # @property
+    # def stream() -> io.BytesIO:
+    #     return self._stream
+
+    # @stream.setter
+    # def _ (value: bytes) -> None:
+    #     self._stream = io.BytesIO(value)
 
 @dataclass
 class Photo(ModelBase, required = ['uid']):
     '''Dataclass for holding data about a photo.
 
     :param uid:
+    :param str path: (optional)
+    :param str name: (optional)
+    :param str title: (optional)
+    :param str description: (optional)
+    :param str file_uid: (optional)
+    :param str file_name: (optional)
+    :param str file_hash: (optional)
+    :param int width: (optional)
+    :param int height: (optional)
+    :param files: (optional)
+    :type files: list[PhotoFile]
     '''
     uid: str
     path: Optional[str] = None
@@ -66,11 +121,11 @@ class PhotoDetails(ModelBase):
 
     :param str artist: (optional)
     :param str artist_src: (optional)
-    :param str _copyright: (optional)
+    :param str copyright: (optional)
     :param str copyright_src: (optional)
     :param str keywords: (optional)
     :param str keywords_src: (optional)
-    :param str _license: (optional)
+    :param str license: (optional)
     :param str license_src: (optional)
     :param str notes: (optional)
     :param str notes_src: (optional)
@@ -80,13 +135,11 @@ class PhotoDetails(ModelBase):
     '''
     artist: Optional[str] = None,
     artist_src: Optional[str] = None,
-    _copyright: Optional[InitVar[str]] = None,
-    copyright: Optional[str] = field(init = False)
+    copyright: Optional[str] = None,
     copyright_src: Optional[str] = None,
     keywords: Optional[str] = None,
     keywords_src: Optional[str] = None,
-    _license: Optional[InitVar[str]] = None,
-    license: Optional[str] = field(init = False, default = None),
+    license: Optional[str] = None,
     license_src: Optional[str] = None,
     notes: Optional[str] = None,
     notes_src: Optional[str] = None,
