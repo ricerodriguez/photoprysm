@@ -106,4 +106,5 @@ def test_upload(mock_file_path, mock_session, mock_i18n_response, mock_file, moc
     responses.get(
         url = urljoin(server_api, f'photos/{urlquote(photo_uid)}'),
         **mock_photo)
-    photo = photos.upload(session, server_api, mock_file_path.open('rb'))
+    with open(mock_file_path, 'rb') as f:
+        photo = photos.upload(session, server_api, f)

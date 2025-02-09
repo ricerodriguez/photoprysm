@@ -103,6 +103,8 @@ def get_by_file(
     :param f: File object to find the Photo of
     '''
     hashbrown = hashlib.sha1(f.read()).hexdigest()
+    # Return cursor to start
+    f.seek(0)
     resp = core.request(
         session = session,
         url = urljoin(server_api, f'files/{hashbrown}'),
@@ -377,8 +379,11 @@ def upload(
         return None
     endpoint = f'users/{uid}/upload/{token}'
     if isinstance(f,list):
-        files = [('files', b.peek()) for b in f]
-    else: files = {'files': f.peek()}
+        files = [('files', b.read()) for b in f]
+        for b in f: b.seek(0)
+    else:
+        files = {'files': f.read()}
+        f.seek(0)
     resp = core.request(
         session = session,
         url = urljoin(server_api, endpoint),
