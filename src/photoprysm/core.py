@@ -81,8 +81,6 @@ class User:
         url = urljoin(server_api, 'session')
         self._url  = url
         data = json.dumps({'username': self.username, 'password': self.password})
-        # data = '{"username":"'+self.username+'", '
-        # data += '"password":"'+self.password+'"}'
         resp = requests.post(
             url,
             data=data,
@@ -112,6 +110,7 @@ class User:
         resp.raise_for_status()
         self.download_token = None
         self._session.close()
+        self._session = None
 
 class PhotoprismAccessToken(requests.auth.AuthBase):
     def __init__(self, token):
@@ -218,10 +217,10 @@ def start_index(
 def request(
         session: requests.Session,
         url: str,
-        method: str,
+        method: str, *,
         headers: Optional[dict[str,str]] = None,
         params: Optional[dict[str,str]] = None,
-        data: Optional[dict[str,str]] = None) -> requests.Response:
+        data: Optional[dict[str,str]] = None, **kwargs) -> requests.Response:
     '''Send the request from a pre-configured `requests.Session`_ instance.
 
     :param session: requests.Session handle with the access token pre-configured
@@ -238,16 +237,18 @@ def request(
         url = url,
         params = params,
         data = data,
-        headers = headers)
+        headers = headers, **kwargs)
     # Raises the error if one occurred
     resp.raise_for_status()
     return resp
 
 def _extract_uid[M](obj: M | str) -> str:
-    if hasattr(obj, 'uid'): return obj.uid
+    if obj is None: return None
+    elif hasattr(obj, 'uid'): return obj.uid
     elif isinstance(obj, str): return obj
     else: return None
 
 def _extract_uids[M](collection: list[M], /) -> list[str]:
+    if collection is None: return []
     return [_extract_uid(obj) for obj in collection]
     

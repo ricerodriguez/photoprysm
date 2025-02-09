@@ -1,8 +1,10 @@
+import io
 import os
 import re
 import enum
 import json
 import logging
+import hashlib
 import requests
 
 from .. import core
@@ -93,9 +95,24 @@ def get_by_uid(
 def get_by_file(
         session: requests.Session,
         server_api: str,
-        _file: PhotoFile) -> Photo:
-    # /files/{sha-1 hash}
-    raise NotImplementedError('This has not yet been implemented.')    
+        f: io.IOBase) -> Photo:
+    '''Get Photo by file-like object.
+
+    :param `requests.Session`_ session: Pre-configured `requests.Session`_ object to send the request with
+    :param server_api: Base URL of the server API
+    :param f: File object to find the Photo of
+    '''
+    hashbrown = hashlib.sha1(f.read()).hexdigest()
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, f'files/{hashbrown}'),
+        method = 'GET')
+    try:
+        uid = resp.json()['PhotoUID']
+    except KeyError:
+        logger.error('No file found matching that hash')
+        return None
+    return get_by_uid(session, server_api, uid)
     
 def archive(
         session: requests.Session,
@@ -327,3 +344,61 @@ def unlike(
         session = session,
         url = urljoin(server_api, endpoint),
         method = 'DELETE')
+
+def upload(
+        session: requests.Session,
+        server_api: str,
+        f: io.IOBase|list[io.IOBase], /,
+        albums: Optional[list[Album|str]] = None) -> Photo|list[Photo]|None:
+    '''Upload a file to the server as the authenticated user.
+
+    >>> from hashlib import sha1
+    >>> with photoprysm.user_session(user, server_api) as session:
+    >>>     photo = photoprysm.upload_photo(session, server_api, open('my_photo.jpg', 'rb'))
+    >>> assert photo.file_hash == sha1(open('my_photo.jpg', 'rb')).hexdigest()
+
+    :param user: User to upload the file as
+    :param server_api: Base URL of the server API
+    :param f: Raw binary file(s) object to upload
+    :param albums: (optional) List of albums to add the files to
+    :type albums: list[Album|str]
+    '''
+    # First we need to get the user ID
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, 'session'),
+        method = 'GET')
+    try:
+        uid = resp.json()['user']['UID']
+        token = resp.json()['config']['downloadToken']
+    except KeyError:
+        logger.error('Something went wrong when getting the session. Is the '
+                     'session already closed?')
+        return None
+    endpoint = f'users/{uid}/upload/{token}'
+    if isinstance(f,list):
+        files = [('files', b.peek()) for b in f]
+    else: files = {'files': f.peek()}
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'POST',
+        files = files
+    )
+    if resp.json()['code'] > 200:
+        logger.error('Something went wrong when uploading the user files.')
+        return None
+    resp = core.request(
+        session = session,
+        url = urljoin(server_api, endpoint),
+        method = 'PUT',
+        data = json.dumps({'albums': core._extract_uids(albums)})
+    )
+    if resp.json()['code'] > 200:
+        logger.error('Something went wrong when processing the user upload.')
+        return None
+    if isinstance(f,list):
+        return [get_by_file(session, server_api, b) for b in f]
+    else:
+        return get_by_file(session, server_api, f)
+    

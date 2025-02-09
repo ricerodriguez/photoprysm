@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 import json
 import pytest
+import requests
 import responses
-from urllib.parse import urljoin
+
+from hashlib import sha1
+from urllib.parse import urljoin, quote as urlquote
 from dataclasses import asdict
 
 from photoprysm import core
@@ -80,3 +83,27 @@ def test_update(mock_photo, server_api, session):
     photo = photos.update(session, server_api, uid, props)
     assert photo.uid == uid
     
+@responses.activate
+def test_upload(mock_file_path, mock_session, mock_i18n_response, mock_file, mock_photo, server_api, session):
+    user_uid = mock_session['json']['user']['UID']
+    token = mock_session['json']['config']['downloadToken']
+    hashbrown = sha1(mock_file_path.read_bytes()).hexdigest()
+    print(hashbrown)
+    responses.get(
+        url = urljoin(server_api, 'session'),
+        **mock_session)
+    endpoint = f'users/{user_uid}/upload/{token}'
+    responses.post(
+        url = urljoin(server_api, endpoint),
+        **mock_i18n_response)
+    responses.put(
+        url = urljoin(server_api, endpoint),
+        **mock_i18n_response)
+    responses.get(
+        url = urljoin(server_api, f'files/{hashbrown}'),
+        **mock_file)
+    photo_uid = mock_file['json']['PhotoUID']
+    responses.get(
+        url = urljoin(server_api, f'photos/{urlquote(photo_uid)}'),
+        **mock_photo)
+    photo = photos.upload(session, server_api, mock_file_path.open('rb'))

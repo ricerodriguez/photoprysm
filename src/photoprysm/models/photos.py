@@ -1,6 +1,7 @@
 from .base import ModelBase
 from dataclasses import dataclass, field, fields, InitVar
 from typing import Optional
+from datetime import datetime
 
 @dataclass
 class PhotoFile(ModelBase, required = ['uid', 'photo_uid']):
@@ -10,6 +11,36 @@ class PhotoFile(ModelBase, required = ['uid', 'photo_uid']):
     '''
     uid: str
     photo_uid: str
+    name: Optional[str] = None
+    root: Optional[str] = None
+    hash: Optional[str] = None
+    size: Optional[int] = None
+    primary: Optional[bool] = None
+    time_index: Optional[int] = None
+    media_id: Optional[str] = None
+    media_utc: Optional[int] = None
+    instance_id: Optional[str] = None
+    codec: Optional[str] = None
+    file_type: Optional[str] = None
+    media_type: Optional[str] = None
+    mime: Optional[str] = None
+    width: Optional[int] = None
+    height: Optional[int] = None
+    orientation: Optional[int] = None
+    orientation_src: Optional[str] = None
+    aspect_ratio: Optional[float] = None
+    color_profile: Optional[str] = None
+    main_color: Optional[str] = None
+    colors: Optional[str] = None
+    luminance: Optional[str] = None
+    diff: Optional[int] = None
+    chroma: Optional[int] = None
+    software: Optional[str] = None
+    mod_time: Optional[int] = None
+    created_at: Optional[datetime] = None
+    created_in: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    markers: Optional[list] = None
 
 @dataclass
 class Photo(ModelBase, required = ['uid']):
